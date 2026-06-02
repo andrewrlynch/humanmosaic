@@ -706,9 +706,9 @@ CRITICAL INSTRUCTIONS:
 - Do NOT omit any paper. Score every paper, even if score is 0.
  
 Score each paper 0-10 for relevance:
-- 8-10: Core topic (tumor evolution, genetic instability, chromosomal instability, clonal evolution, aneuploidy, phenotypic plasticity, lineage fate, ecDNA, chromothripsis, tumor timing, subclonal dynamics, clonal hematopoiesis, somatic mosaicism, mutational signatures)
-- 5-7: Related (cancer genomics methods, aging, wound healing, dysplasia, pre-cancer, tumor microenvironment)
-- 2-4: Adjacent (general cancer biology with genomic or somatic component, population genetics with somatic angle, clinical studies with genomic analysis)
+- 8-10: Core topic (tumor evolution, genetic instability, chromosomal instability, clonal evolution, aneuploidy, somatic mosaicism, phenotypic plasticity, lineage fate, ecDNA, chromothripsis, tumor timing, subclonal dynamics, clonal hematopoiesis, mutational signatures)
+- 5-7: Related (cancer genomics methods, aging, wound healing, dysplasia, metaplasia, hyperplasia, pre-cancer, tumor microenvironment)
+- 2-4: Adjacent (general cancer biology or population genetcis with genomic component, but not focused on evolution or instability)
 - 0-1: Irrelevant (evolutionary studies in non-human models with no human application, pure methods papers with no biological insight)
  
 Assign each paper exactly one section:
