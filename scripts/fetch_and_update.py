@@ -176,13 +176,13 @@ TIER2 = [
     # Mitosis and chromosomal instability terms
     "abnormal mitosis", "mitotic fidelity", "chromosome missegregation", "micronucleus", "lagging chromosome", "anaphase bridge", "centrosome amplification", "spindle assembly checkpoint", "cytokinesis failure", "replication stress", "DNA damage", "genome instability", "telomere dysfunction", "telomere catastrophe", "whole genome doubling", "WGD", 
     # Methods terms
-    "cancer genome", "whole genome sequencing", "wgs", "single-cell sequencing", "scRNA-seq", "spatial transcriptomics", "ATAC-seq", "ChIP-seq", "lineage tracing", "barcoding", "phylogenetics", "computational modeling", "machine learning", "deep learning", "clustering", "dimensionality reduction",
+    "cancer genome", "whole genome sequencing", "wgs", "single-cell sequencing", "scRNA-seq", "spatial transcriptomics", "ATAC-seq", "ChIP-seq", "lineage tracing", "barcoding", "phylogenetics",
     # Simple variant terms
     "copy number", "copy number variation", "copy number alteration", "CNA", "aneuploidy", "amplification", "structural variation", "structural variant", "SV", "genomic deletion", "inversion", "translocation", "rearrangement",
     # Complex variant or cluster mutagenesis terms
     "ecDNA", "extrachromosomal", "double minute", "chromothripsis", "chromoplexy", "kataegis", "BFB", "breakage-fusion-bridge", "breakage fusion bridge",
     # Evolution terms
-    "cancer phylogeny", "tumor phylogenetics", "phylogenomics", "timing", "ccf", "cancer cell fraction", "clonal dynamics", "subclonal dynamics", "evolutionary trajectory", "evolutionary trajectories",
+    "cancer phylogeny", "tumor phylogenetics", "phylogenomics", "evolutionary timing", "mutation timing", "ccf", "cancer cell fraction", "clonal dynamics", "subclonal dynamics", "evolutionary trajectory", "evolutionary trajectories",
     # Human genetic diversity
     "population genomics", "human genetic diversity", "pangenome", "polygenic risk", "ancestry", "admixture", "rare variant", "germline structural variation", "gwas", "genome-wide association",
     # Plasticity terms
