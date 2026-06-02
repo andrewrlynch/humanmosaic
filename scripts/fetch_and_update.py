@@ -58,157 +58,124 @@ COLUMNS = [
 
 # ── Feeds ──────────────────────────────────────────────────────────────────────
 
-RSS_FEEDS = [
-    # Preprint servers
-    ("bioRxiv Cancer Biology",              "https://connect.biorxiv.org/biorxiv_xml.php?subject=cancer_biology",         "preprint"),
-    ("bioRxiv Genomics",                    "https://connect.biorxiv.org/biorxiv_xml.php?subject=genomics",               "preprint"),
-    ("bioRxiv Evolutionary Bio",            "https://connect.biorxiv.org/biorxiv_xml.php?subject=evolutionary_biology",   "preprint"),
-    ("medRxiv Oncology",                    "https://connect.medrxiv.org/medrxiv_xml.php?subject=oncology",               "preprint"),
-    ("medRxiv Pathology",                   "https://connect.medrxiv.org/medrxiv_xml.php?subject=pathology",              "preprint"),
-    ("arXiv q-bio.GN",                      "https://arxiv.org/rss/q-bio.GN",                                             "preprint"),
-    ("arXiv q-bio.PE",                      "https://arxiv.org/rss/q-bio.PE",                                             "preprint"),
-    ("arXiv q-bio.QM",                      "https://arxiv.org/rss/q-bio.QM",                                             "preprint"),
-    ("arXiv q-bio.CB",                      "https://arxiv.org/rss/q-bio.CB",                                             "preprint"),
-    ("arXiv cs.LG",                         "https://arxiv.org/rss/cs.LG",                                                "preprint"),
-    ("eLife",                               "https://elifesciences.org/rss/recent.xml",                                   "preprint"), 
+# ── Reference sheet config ────────────────────────────────────────────────────
+# Feeds and keywords are loaded from the public Google Sheet at runtime.
+# Hardcoded fallbacks are used if the sheet is unreachable.
 
-    # CSHL Press
-    ("Genome Research",                     "https://genome.cshlp.org/rss/current.xml",                                   "journal"),
-    ("Genes & Development",                 "https://genesdev.cshlp.org/rss/current.xml",                                 "journal"),
-    ("Cold Spring Harb Perspect Biol",      "https://cshperspectives.cshlp.org/rss/current.xml",                          "journal"),
+REF_SHEET_ID = "18rT6XT_SfOvQQi1xkdodcgCmKu9FeF_SHIOb06rFfC0"
+REF_KW_GID   = "0"
+REF_FEED_GID = "1651663853"
 
-    # BMJ
-    ("Gut",                                 "https://gut.bmj.com/rss/current.xml",                                        "journal"),
-    ("BMJ Clinical Genetics & Genomics",    "https://jmg.bmj.com/rss/current.xml",                                        "journal"),
-    ("BMJ Clinical Pathology",              "https://jcp.bmj.com/rss/current.xml",                                        "journal"),
- 
-    # AACR
-    ("Cancer Discovery",                    "https://aacrjournals.org/rss/site_1000003/1000004.xml",                      "journal"),
-    ("Cancer Research",                     "https://aacrjournals.org/rss/site_1000011/1000008.xml",                      "journal"),
-    ("Clinical Cancer Research",            "https://aacrjournals.org/rss/site_1000013/1000009.xml",                      "journal"),
-    ("Cancer Prevention Research",          "https://aacrjournals.org/rss/site_1000009/1000007.xml",                      "journal"),
-    ("Molecular Cancer Research",           "https://aacrjournals.org/rss/site_1000015/1000010.xml",                      "journal"),
- 
-    # Cell Press
-    ("Cell",                                "https://www.cell.com/cell/inpress.rss",                                      "journal"),
-    ("Cancer Cell",                         "https://www.cell.com/cancer-cell/inpress.rss",                               "journal"),
-    ("Cell Genomics",                       "https://www.cell.com/cell-genomics/inpress.rss",                             "journal"),
-    ("Cell Cycle",                          "https://www.tandfonline.com/feed/rss/kccy20",  "journal"),
-    ("Molecular Cell",                      "https://www.cell.com/molecular-cell/inpress.rss",                            "journal"),
-    ("Cell Reports",                        "https://www.cell.com/cell-reports/inpress.rss",                              "journal"),
-    ("Cell Reports Medicine",               "https://www.cell.com/cell-reports-medicine/inpress.rss",                     "journal"),
-    ("Developmental Cell",                  "https://www.cell.com/developmental-cell/inpress.rss",                        "journal"),
-    ("American Journal of Human Genetics",  "https://www.cell.com/ajhg/inpress.rss",                                      "journal"),
-    ("iScience",                            "https://www.cell.com/iscience/inpress.rss",                                  "journal"),
-    ("Current Opinion in Genetics",         "https://www.cell.com/current-opinion-genetics-development/inpress.rss",      "journal"),
-    ("Trends in Genetics",                  "https://www.cell.com/trends/genetics/inpress.rss",                           "journal"),
-    ("Trends in Cancer",                    "https://www.cell.com/trends/cancer/inpress.rss",                             "journal"),
-    ("Trends in Cell Biology",              "https://www.cell.com/trends/cell-biology/inpress.rss",                       "journal"),
- 
-    # Nature portfolio
-    ("Nature",                    "https://www.nature.com/nature.rss",                                         "journal"),
-    ("Nature Genetics",           "https://www.nature.com/ng.rss",                                             "journal"),
-    ("Nature Cancer",             "https://www.nature.com/natcancer.rss",                                      "journal"),
-    ("Nature Methods",            "https://www.nature.com/nmeth.rss",                                          "journal"),
-    ("Nature Communications",     "https://www.nature.com/ncomms.rss",                                         "journal"),
-    ("Nature Ecology & Evolution","https://www.nature.com/natecolevol.rss",                                    "journal"),
-    ("Nature Medicine",           "https://www.nature.com/nm.rss",                                             "journal"),
-    ("Nature Reviews Cancer",     "https://www.nature.com/nrc.rss",                                            "journal"),
-    ("Nature Reviews Genetics",   "https://www.nature.com/nrg.rss",                                            "journal"),
-    ("Blood Cancer Journal",      "https://www.nature.com/bcj.rss",                                            "journal"),
-    ("Leukemia",                  "https://www.nature.com/leu.rss",                                            "journal"),
-    ("Oncogene",                  "https://www.nature.com/onc.rss",                                            "journal"),
-    ("Scientific Reports",        "https://www.nature.com/srep.rss",                                            "journal"),
-    ("Nature Reviews Molecular Cell Bio", "https://www.nature.com/nrm.rss",       "journal"),
-    ("Nature Reviews Disease Primers", "https://www.nature.com/nrdp.rss",         "journal"),
-
-    # Annual Reviews
-    ("Annual Review of Genetics",      "https://www.annualreviews.org/rss/content/journals/genet/latestarticles", "journal"),
-    ("Annual Review of Genomics",      "https://www.annualreviews.org/rss/content/journals/genom/latestarticles", "journal"),
-    ("Annual Review of Cancer Biology","https://www.annualreviews.org/rss/content/journals/cancerbio/latestarticles", "journal"),
-    ("Annual Review of Cell Dev Biol", "https://www.annualreviews.org/rss/content/journals/cellbio/latestarticles", "journal"),
-    ("Annual Review of Medicine",      "https://www.annualreviews.org/rss/content/journals/med/latestarticles",   "journal"),
-
- 
-    # Oxford
-    ("Bioinformatics",            "https://academic.oup.com/rss/site_5127/advanceAccess_3122.xml",             "journal"),
-    ("Briefings in Bioinformatics","https://academic.oup.com/rss/site_5374/advanceAccess_3707.xml",            "journal"),
-    ("Nucleic Acids Research",    "https://academic.oup.com/rss/site_5127/advanceAccess_3120.xml",             "journal"),
- 
-    # PLOS
-    ("PLOS Biology",              "https://journals.plos.org/plosbiology/feed/atom",                           "journal"),
-    ("PLOS Computational Biology","https://journals.plos.org/ploscompbiol/feed/atom",                          "journal"),
-    ("PLOS Genetics",             "https://journals.plos.org/plosgenetics/feed/atom",                          "journal"),
- 
-    # NEJM / Lancet
-    ("NEJM",                      "https://www.nejm.org/action/showFeed?jc=nejm&type=etoc&feed=rss",           "journal"),
-    ("Lancet Oncology",           "https://www.thelancet.com/rssfeed/lanonc_current.xml",                      "journal"),
-    ("Lancet",                    "https://www.thelancet.com/rssfeed/lancet_current.xml",                       "journal"),
- 
-    # Science journals (AAAS)
-    ("Science",                   "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science",     "journal"),
-    ("Science Translational Medicine", "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=stm",    "journal"),
-    ("Science Advances",          "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciadv",      "journal"),
-    ("Science Immunology",        "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciimmunol",  "journal"),
-    ("Science Signaling",         "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=scisignal",   "journal"),
- 
-    # ASCB
-    ("Molecular Biology of the Cell", "https://www.molbiolcell.org/action/showFeed?type=etoc&feed=rss&jc=mboc", "journal"),
-
-    # Other
-    ("Seminars in Cancer Biology",     "https://rss.sciencedirect.com/publication/science/10462804",            "journal"),
-    ("Genome Biology",            "https://genomebiology.biomedcentral.com/articles/most-recent/rss.xml",      "journal"),
-    ("Journal of Cell Biology",            "https://rupress.org/rss/site_1000001/1000003.xml",                 "journal")
- ]
-
-# ── Keywords ───────────────────────────────────────────────────────────────────
-
-TIER1 = [
-    "tumor evolution", "cancer evolution", "somatic evolution", "clonal evolution", "subclonal evolution", "cancer progression", "field cancerization",
-    "chromosomal instability", "genomic instability", "genetic instability", "phenotype plasticity", "phenotypic plasticity", "therapeutic resistance", "somatic mosaicism", "clonal hematopoiesis"
+# Fallback values (used if sheet fetch fails)
+RSS_FEEDS_FALLBACK = [
+    ("bioRxiv Cancer Biology", "https://connect.biorxiv.org/biorxiv_xml.php?subject=cancer_biology", "preprint"),
+    ("bioRxiv Genomics",       "https://connect.biorxiv.org/biorxiv_xml.php?subject=genomics",       "preprint"),
+    ("Nature Genetics",        "https://www.nature.com/ng.rss",                                       "journal"),
+    ("Nature Cancer",          "https://www.nature.com/natcancer.rss",                                "journal"),
+    ("Cancer Cell",            "https://www.cell.com/cancer-cell/inpress.rss",                        "journal"),
+    ("Cancer Discovery",       "https://aacrjournals.org/rss/site_1000003/1000004.xml",               "journal"),
+    ("Genome Research",        "https://genome.cshlp.org/rss/current.xml",                            "journal"),
 ]
 
-TIER2 = [
-    # Mutation terms
-    "somatic mutation", "mutational signature", "mutation signature", "somatic hypermutation", "APOBEC", "MMR", "mismatch repair", "HRD", "homologous recombination deficiency", "mutagenic exposure", "base editing", "DNA repair pathway",
-    # ITH terms
-    "tumor heterogeneity", "intratumor heterogeneity", "cellular heterogeneity",
-    # Mitosis and chromosomal instability terms
-    "abnormal mitosis", "mitotic fidelity", "chromosome missegregation", "chromosome mis-segregation", "micronucleus", "lagging chromosome", "anaphase bridge", "centrosome amplification", "spindle assembly checkpoint", "cytokinesis failure", "replication stress", "DNA damage", "genome instability", "telomere dysfunction", "telomere catastrophe", "whole genome doubling", "WGD", 
-    # Methods terms
-    "cancer genome", "whole genome sequencing", "wgs", "single-cell sequencing", "scRNA-seq", "spatial transcriptomics", "ATAC-seq", "ChIP-seq", "lineage tracing", "barcoding", "phylogenetics",
-    # Simple variant terms
-    "copy number", "copy number variation", "copy number alteration", "aneuploidy", "amplification", "structural variation", "structural variant", "genomic deletion", "genomic inversion", "genomic translocation", "genomic rearrangement", "chromosomal deletion", "chromosomal inversion", "chromosomal translocation", "chromosomal rearrangement",
-    # Complex variant or cluster mutagenesis terms
-    "ecDNA", "extrachromosomal", "double minute", "chromothripsis", "chromoplexy", "kataegis", "BFB", "breakage-fusion-bridge", "breakage fusion bridge",
-    # Evolution terms
-    "cancer phylogeny", "tumor phylogenetics", "phylogenomics", "evolutionary timing", "mutation timing", "ccf", "cancer cell fraction", "clonal dynamics", "subclonal dynamics", "evolutionary trajectory", "evolutionary trajectories",
-    # Human genetic diversity
-    "population genomics", "human genetic diversity", "pangenome", "polygenic risk", "ancestry", "admixture", "rare variant", "germline structural variation", "gwas", "genome-wide association",
-    # Plasticity terms
-    "reprogramming", "transdifferentiation", "cell state", "stromal remodeling", "tumor microenvironment", "cancer-associated fibroblast", "neural remodeling", "perineural", "axonogenesis", "neuroendocrine", "epithelial-mesenchymal transition", "EMT", "neuroplasticity", "cell identity", "fate determination", "lineage plasticity", "differentiation", "de-differentiation", "dedifferentiation", "wound healing",
-    # Specific cancer terms
-    "sarcoma", "leiomyosarcoma", "osteosarcoma", "carcinoma", "adenoma", "adenocarcinoma", "lung cancer", "breast cancer", "PDAC", "pancreatic cancer", "colorectal cancer", "glioblastoma", "leukemia", "lymphoma", "melanoma", "prostate cancer", "ovarian cancer", "bladder cancer", "esophageal cancer", "gastric cancer", "liver cancer", "hepatocellular carcinoma", "cancer of unknown primary", "CUP", "metastatic cancer", "advanced cancer", "therapy-resistant cancer"
+TIER1_FALLBACK = [
+    "tumor evolution", "cancer evolution", "somatic evolution", "clonal evolution",
+    "chromosomal instability", "genomic instability", "phenotypic plasticity",
+    "somatic mosaicism", "clonal hematopoiesis", "chromothripsis", "ecDNA",
+    "whole genome doubling", "mutational signature", "therapeutic resistance",
 ]
 
-# Terms that frequently cause false positives — never count toward the threshold
+TIER2_FALLBACK = [
+    "somatic mutation", "subclonal", "copy number variation", "structural variation",
+    "aneuploidy", "tumor heterogeneity", "cancer genome", "replication stress",
+    "epigenetic", "lineage plasticity", "dedifferentiat", "cell state",
+    "sarcoma", "leukemia", "glioblastoma", "APOBEC", "HRD", "mismatch repair",
+]
+
 BLOCKLIST = [
     "arabidopsis", "drosophila", "saccharomyces", "caenorhabditis",
     "zebrafish", "xenopus", "maize", "wheat", "rice",
     "yeast two-hybrid", "plant pathogen",
 ]
- 
+
+# Runtime-loaded config (populated by load_config())
+RSS_FEEDS: list[tuple] = []
+TIER1:     list[str]   = []
+TIER2:     list[str]   = []
+
 SECTIONS = [
-    ("Cancer Evolution",     ["tumor evolution","cancer evolution","clonal evolution","subclonal","tumor heterogeneity","ecDNA","whole genome doubling"]),
-    ("Somatic Evolution",    ["somatic evolution","somatic mosaicism","clonal hematopoiesis","aging","non-cancer clonal"]),
-    ("Genome Instability",   ["chromosomal instability","genomic instability","chromothripsis","aneuploidy","structural variation","replication stress","DNA damage","breakage fusion bridge","telomere"]),
-    ("Mutational Processes", ["mutational signature","APOBEC","HRD","mismatch repair","kataegis","DNA repair"]),
-    ("Plasticity & Epigenetics", ["phenotypic plasticity","epigenetic","cell state","dedifferentiation","lineage plasticity","EMT","transdifferentiation"]),
-    ("Human Diversity",      ["population genomics","gwas","pangenome","polygenic risk","ancestry","admixture","rare variant"]),
+    ("Cancer Evolution",                          ["tumor evolution","cancer evolution","clonal evolution","subclonal","tumor heterogeneity","ecDNA","whole genome doubling"]),
+    ("Somatic Evolution",                         ["somatic evolution","somatic mosaicism","clonal hematopoiesis","aging","non-cancer clonal"]),
+    ("Genome Instability",                        ["chromosomal instability","genomic instability","chromothripsis","aneuploidy","structural variation","replication stress","DNA damage","breakage fusion bridge","telomere"]),
+    ("Mutational Processes",                      ["mutational signature","APOBEC","HRD","mismatch repair","kataegis","DNA repair"]),
+    ("Phenotypic Plasticity and Epigenetic Dysregulation", ["phenotypic plasticity","epigenetic","cell state","dedifferentiation","lineage plasticity","EMT","transdifferentiation"]),
+    ("Human Genetic Diversity and Health",        ["population genomics","gwas","pangenome","polygenic risk","ancestry","admixture","rare variant"]),
 ]
- 
+
+
+def _fetch_csv(gid: str) -> list[dict]:
+    """Fetch a tab from the reference Google Sheet as a list of dicts."""
+    url = f"https://docs.google.com/spreadsheets/d/{REF_SHEET_ID}/export?format=csv&gid={gid}"
+    r = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+    r.raise_for_status()
+    import csv, io
+    reader = csv.DictReader(io.StringIO(r.text))
+    return [row for row in reader if any(v.strip() for v in row.values())]
+
+
+def load_config() -> None:
+    """
+    Load RSS feeds and keywords from the public reference Google Sheet.
+    Falls back to hardcoded values if the sheet is unreachable.
+    """
+    global RSS_FEEDS, TIER1, TIER2
+
+    # ── Feeds ──────────────────────────────────────────────────────────────────
+    try:
+        rows = _fetch_csv(REF_FEED_GID)
+        feeds = []
+        for row in rows:
+            source = (row.get("Source") or row.get("source") or "").strip()
+            url    = (row.get("Feed")   or row.get("url")    or "").strip()
+            ftype  = (row.get("Type")   or row.get("type")   or "journal").strip().lower()
+            if source and url:
+                feeds.append((source, url, ftype))
+        if feeds:
+            RSS_FEEDS = feeds
+            print(f"  Config: loaded {len(RSS_FEEDS)} feeds from sheet")
+        else:
+            raise ValueError("no feeds parsed")
+    except Exception as e:
+        print(f"  Config: feed sheet failed ({e}), using fallback", file=sys.stderr)
+        RSS_FEEDS = RSS_FEEDS_FALLBACK
+
+    # ── Keywords ───────────────────────────────────────────────────────────────
+    try:
+        rows = _fetch_csv(REF_KW_GID)
+        t1, t2 = [], []
+        for row in rows:
+            kw   = (row.get("Keyword")      or "").strip()
+            tier = (row.get("Keyword_Tier") or "").strip()
+            if not kw:
+                continue
+            if "1" in tier:
+                t1.append(kw)
+            elif "2" in tier:
+                t2.append(kw)
+        if t1 and t2:
+            TIER1 = t1
+            TIER2 = t2
+            print(f"  Config: loaded {len(TIER1)} Tier 1, {len(TIER2)} Tier 2 keywords from sheet")
+        else:
+            raise ValueError("no keywords parsed")
+    except Exception as e:
+        print(f"  Config: keyword sheet failed ({e}), using fallback", file=sys.stderr)
+        TIER1 = TIER1_FALLBACK
+        TIER2 = TIER2_FALLBACK
+
+
+
 # ── Utilities ──────────────────────────────────────────────────────────────────
- 
+
 def strip_html(text: str) -> str:
     text = re.sub(r"<[^>]+>", " ", text or "")
     text = re.sub(r"&amp;", "&", text)
@@ -217,26 +184,26 @@ def strip_html(text: str) -> str:
     text = re.sub(r"&nbsp;", " ", text)
     text = re.sub(r"&#[0-9]+;", "", text)
     return " ".join(text.split())
- 
- 
+
+
 def clean_doi(doi: str) -> str:
     if not doi:
         return ""
     return doi.split("?")[0].split("#")[0].rstrip("./,;").strip()
- 
- 
+
+
 def title_key(title: str) -> str:
     t = (title or "").lower()
     t = re.sub(r"[^a-z0-9\s]", " ", t)
     return re.sub(r"\s+", " ", t).strip()
- 
- 
+
+
 def paper_key(title: str, doi: str) -> str:
     if doi:
         return f"doi:{doi.strip()}"
     return f"title:{title_key(title)[:80]}"
- 
- 
+
+
 def parse_date(entry) -> datetime | None:
     for field in ("published", "updated"):
         val = entry.get(f"{field}_parsed")
@@ -252,8 +219,8 @@ def parse_date(entry) -> datetime | None:
             except Exception:
                 pass
     return None
- 
- 
+
+
 def keyword_passes(text: str) -> bool:
     """
     Pass if: >=1 Tier 1 keyword OR >=2 Tier 2 keywords.
@@ -261,34 +228,34 @@ def keyword_passes(text: str) -> bool:
     (avoids model organism papers that happen to mention genomics methods).
     """
     t = text.lower()
- 
+
     # Tier 1 always passes regardless of blocklist
     if any(k.lower() in t for k in TIER1):
         return True
- 
+
     # Reject if blocklist term present — these are model organism / off-topic papers
     if any(b.lower() in t for b in BLOCKLIST):
         return False
- 
+
     return sum(1 for k in TIER2 if k.lower() in t) >= 2
- 
- 
+
+
 def classify_section(text: str) -> str:
     t = text.lower()
     for section, keywords in SECTIONS:
         if any(k.lower() in t for k in keywords):
             return section
     return "Other"
- 
- 
+
+
 def extract_tags(text: str) -> str:
     t = text.lower()
     all_kw = TIER1 + TIER2
     hits = [k for k in all_kw if k.lower() in t and k not in BLOCKLIST]
     unique = list(dict.fromkeys(hits))
     return ", ".join(unique[:5])
- 
- 
+
+
 def extract_authors(entry) -> str:
     authors_list = entry.get("authors", [])
     if authors_list and isinstance(authors_list, list):
@@ -304,14 +271,14 @@ def extract_authors(entry) -> str:
             return ", ".join(parts[:3]) + suffix
         return author_str.strip()
     return ""
- 
+
 # ── Fetch ──────────────────────────────────────────────────────────────────────
- 
+
 def fetch_rss(days: int) -> list[dict]:
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
     papers = []
     seen_keys: set[str] = set()
- 
+
     for label, url, feed_type in RSS_FEEDS:
         try:
             r = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
@@ -321,14 +288,14 @@ def fetch_rss(days: int) -> list[dict]:
                 pub_date = parse_date(entry)
                 if pub_date and pub_date < cutoff:
                     continue
- 
+
                 link = entry.get("link", "")
                 title = strip_html(entry.get("title", "")).strip()
                 abstract = strip_html(entry.get("summary", "")).strip()
- 
+
                 if not title or len(title) < 10:
                     continue
- 
+
                 # DOI extraction
                 doi = ""
                 for tag in entry.get("tags", []):
@@ -342,16 +309,16 @@ def fetch_rss(days: int) -> list[dict]:
                     m = re.search(r"10\.\d{4,}/[^\s?#]+", link)
                     if m:
                         doi = clean_doi(m.group(0))
- 
+
                 key = paper_key(title, doi)
                 if key in seen_keys:
                     continue
                 seen_keys.add(key)
- 
+
                 combined = title + " " + abstract
                 if not keyword_passes(combined):
                     continue
- 
+
                 papers.append({
                     "key":        key,
                     "title":      title,
@@ -371,10 +338,10 @@ def fetch_rss(days: int) -> list[dict]:
         except Exception as e:
             print(f"  [{label}] FAILED: {e}", file=sys.stderr)
         time.sleep(0.3)
- 
+
     return papers
- 
- 
+
+
 def fetch_biorxiv_api(days: int) -> list[dict]:
     """
     Fetch all papers from bioRxiv/medRxiv for the date range, then keyword-filter.
@@ -387,7 +354,7 @@ def fetch_biorxiv_api(days: int) -> list[dict]:
     date_str = f"{start.strftime('%Y-%m-%d')}/{end.strftime('%Y-%m-%d')}"
     papers   = []
     seen: set[str] = set()
- 
+
     for server in ["biorxiv", "medrxiv"]:
         cursor = 0
         server_total = None
@@ -399,28 +366,28 @@ def fetch_biorxiv_api(days: int) -> list[dict]:
                 data       = r.json()
                 collection = data.get("collection", [])
                 messages   = data.get("messages", [{}])
- 
+
                 if server_total is None:
                     server_total = int(messages[0].get("count", 0)) if messages else 0
                     print(f"  [{server}] {server_total} total papers in window")
- 
+
                 for p in collection:
                     doi = p.get("doi", "")
                     doi_base = re.sub(r"v\d+$", "", doi).strip()
                     if doi_base in seen:
                         continue
                     seen.add(doi_base)
- 
+
                     title    = p.get("title", "")
                     abstract = p.get("abstract", "")
                     combined = title + " " + abstract
                     if not keyword_passes(combined):
                         continue
- 
+
                     # Use biorxiv.org URL directly — more reliable than doi.org
                     # for newly posted 10.64898 papers (doi.org can take 24h to resolve)
                     biorxiv_url = f"https://www.biorxiv.org/content/{doi}"
- 
+
                     papers.append({
                         "key":        paper_key(title, doi_base),
                         "title":      title,
@@ -435,23 +402,23 @@ def fetch_biorxiv_api(days: int) -> list[dict]:
                         "abstract":   abstract,
                         "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
                     })
- 
+
                 cursor += len(collection)
                 if not collection or (server_total and cursor >= server_total):
                     break
- 
+
             except Exception as e:
                 print(f"  bioRxiv API ({server} cursor={cursor}) failed: {e}", file=sys.stderr)
                 break
- 
+
             time.sleep(0.3)
- 
+
     print(f"  [bioRxiv API] {len(papers)} keyword-matched papers")
     return papers
- 
- 
+
+
 # ── NCBI / PubMed ──────────────────────────────────────────────────────────────
- 
+
 NCBI_JOURNALS = [
     "Nature", "Nature genetics", "Nature cancer", "Nature methods",
     "Nature communications", "Science", "Cell", "Cancer cell",
@@ -462,7 +429,7 @@ NCBI_JOURNALS = [
     "Bioinformatics", "Briefings in bioinformatics",
     "Nucleic acids research", "Blood", "Journal of clinical oncology",
 ]
- 
+
 NCBI_QUERY_TERMS = [
     "chromosomal instability", "somatic evolution", "structural variation",
     "extrachromosomal DNA", "ecDNA", "tumor evolution", "copy number variation",
@@ -476,10 +443,10 @@ NCBI_QUERY_TERMS = [
     "clonal hematopoiesis", "somatic mosaicism", "tumor heterogeneity",
     "phenotypic plasticity", "lineage plasticity", "dedifferentiation",
 ]
- 
+
 NCBI_BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
- 
- 
+
+
 def _ncbi_build_query(days: int, journals: list[str] | None = None) -> str:
     end   = datetime.now()
     start = end - timedelta(days=days)
@@ -489,8 +456,8 @@ def _ncbi_build_query(days: int, journals: list[str] | None = None) -> str:
         journal_block = " OR ".join(f'"{j}"[TA]' for j in journals)
         return f"({kw_block}) AND ({journal_block}) AND {date_filter}"
     return f"({kw_block}) AND {date_filter}"
- 
- 
+
+
 def _ncbi_efetch_batch(pmids: list[str], email: str = "digest@humanmosaic.io") -> list[dict]:
     import xml.etree.ElementTree as ET
     if not pmids:
@@ -504,14 +471,14 @@ def _ncbi_efetch_batch(pmids: list[str], email: str = "digest@humanmosaic.io") -
     except Exception as e:
         print(f"  efetch failed: {e}", file=sys.stderr)
         return []
- 
+
     papers = []
     try:
         root = ET.fromstring(r.content)
     except ET.ParseError as e:
         print(f"  XML parse error: {e}", file=sys.stderr)
         return []
- 
+
     for article in root.findall(".//PubmedArticle"):
         try:
             title_el = article.find(".//ArticleTitle")
@@ -565,8 +532,8 @@ def _ncbi_efetch_batch(pmids: list[str], email: str = "digest@humanmosaic.io") -
             print(f"  Error parsing PubMed article: {e}", file=sys.stderr)
             continue
     return papers
- 
- 
+
+
 def fetch_ncbi(days: int, email: str = "digest@humanmosaic.io",
                max_results: int = 200) -> list[dict]:
     """Search PubMed for recent papers matching NCBI_QUERY_TERMS in NCBI_JOURNALS."""
@@ -582,27 +549,27 @@ def fetch_ncbi(days: int, email: str = "digest@humanmosaic.io",
     except Exception as e:
         print(f"  PubMed esearch failed: {e}", file=sys.stderr)
         return []
- 
+
     pmids = data.get("esearchresult", {}).get("idlist", [])
     total = data.get("esearchresult", {}).get("count", "?")
     print(f"  PubMed: {len(pmids)} PMIDs (of {total} total matches)")
     if not pmids:
         return []
- 
+
     papers = []
     for i in range(0, len(pmids), 50):
         papers.extend(_ncbi_efetch_batch(pmids[i:i+50], email))
         time.sleep(0.4)
- 
+
     # Keyword filter — PubMed query is broad, filter to our tiers
     before = len(papers)
     papers = [p for p in papers if keyword_passes(p["title"] + " " + p["abstract"])]
     print(f"  PubMed: {len(papers)}/{before} papers after keyword filter")
     return papers
- 
- 
+
+
 # ── Google Sheets ──────────────────────────────────────────────────────────────
- 
+
 def get_client() -> gspread.Client:
     sa_json = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
     if not sa_json:
@@ -610,8 +577,8 @@ def get_client() -> gspread.Client:
     info = json.loads(sa_json)
     creds = Credentials.from_service_account_info(info, scopes=SCOPES)
     return gspread.authorize(creds)
- 
- 
+
+
 def get_or_create_sheet(client: gspread.Client, sheet_id: str | None) -> tuple[gspread.Spreadsheet, bool]:
     created = False
     if sheet_id:
@@ -621,29 +588,29 @@ def get_or_create_sheet(client: gspread.Client, sheet_id: str | None) -> tuple[g
             return sh, created
         except Exception:
             print(f"  Sheet {sheet_id} not found, creating new one...")
- 
+
     sh = client.create(SHEET_NAME)
     sh.share(None, perm_type="anyone", role="reader")
     created = True
     print(f"  Created sheet: {sh.title} (ID: {sh.id})")
     print(f"  *** Set GOOGLE_SHEET_ID={sh.id} in your GitHub repo secrets ***")
- 
+
     # Write to GITHUB_ENV if running in Actions
     github_env = os.environ.get("GITHUB_ENV")
     if github_env:
         with open(github_env, "a") as f:
             f.write(f"GOOGLE_SHEET_ID={sh.id}\n")
         print(f"  Written GOOGLE_SHEET_ID to GITHUB_ENV")
- 
+
     return sh, created
- 
- 
+
+
 def ensure_worksheet(sh: gspread.Spreadsheet, created: bool) -> gspread.Worksheet:
     try:
         ws = sh.worksheet(WORKSHEET)
     except gspread.WorksheetNotFound:
         ws = sh.add_worksheet(WORKSHEET, rows=10000, cols=len(COLUMNS))
- 
+
     # Write header if sheet is empty or newly created
     if created or ws.row_count == 0 or not ws.row_values(1):
         ws.clear()
@@ -657,18 +624,18 @@ def ensure_worksheet(sh: gspread.Spreadsheet, created: bool) -> gspread.Workshee
             }
         }]})
         print(f"  Header row written")
- 
+
     return ws
- 
- 
+
+
 def load_existing_keys(ws: gspread.Worksheet) -> set[str]:
     try:
         keys = ws.col_values(1)
         return set(keys[1:])  # skip header
     except Exception:
         return set()
- 
- 
+
+
 def append_papers(ws: gspread.Worksheet, papers: list[dict], existing_keys: set[str]) -> int:
     new_rows = []
     for p in papers:
@@ -677,41 +644,41 @@ def append_papers(ws: gspread.Worksheet, papers: list[dict], existing_keys: set[
         row = [p.get(col, "") for col in COLUMNS]
         new_rows.append(row)
         existing_keys.add(p["key"])
- 
+
     if new_rows:
         ws.append_rows(new_rows, value_input_option="RAW")
         print(f"  Appended {len(new_rows)} new rows")
     else:
         print(f"  No new papers to append")
- 
+
     return len(new_rows)
- 
- 
+
+
 def write_sheet_id_to_docs(sheet_id: str) -> None:
     """Write the sheet ID to docs/sheet_id.txt for the dashboard to read."""
     docs_dir = Path(__file__).parent.parent / "docs"
     docs_dir.mkdir(exist_ok=True)
     (docs_dir / "sheet_id.txt").write_text(sheet_id)
- 
- 
- 
+
+
+
 # ── GitHub Models classification ───────────────────────────────────────────────
- 
+
 MIN_SCORE = int(os.environ.get("MIN_SCORE", "3"))
- 
+
 CLASSIFY_SYSTEM = """You are a genomics expert scoring and classifying papers for The Human Mosaic newsletter.
- 
+
 CRITICAL INSTRUCTIONS:
 - You will receive N papers. Return exactly N entries — one per paper, no exceptions.
 - Do NOT omit any paper. Score every paper, even if score is 0.
- 
+
 Score each paper 0-10 for relevance:
-- 8-10: Core topic (tumor evolution, genetic instability, chromosomal instability, clonal evolution, aneuploidy, somatic mosaicism, phenotypic plasticity, lineage fate, ecDNA, chromothripsis, tumor timing, subclonal dynamics, clonal hematopoiesis, mutational signatures)
-- 5-7: Related (cancer genomics methods, aging, wound healing, dysplasia, metaplasia, hyperplasia, pre-cancer, tumor microenvironment)
-- 2-4: Adjacent (general cancer biology or population genetcis with genomic component, but not focused on evolution or instability)
+- 8-10: Core topic (tumor evolution, genetic instability, chromosomal instability, clonal evolution, aneuploidy, phenotypic plasticity, lineage fate, ecDNA, chromothripsis, tumor timing, subclonal dynamics, clonal hematopoiesis, somatic mosaicism, mutational signatures)
+- 5-7: Related (cancer genomics methods, aging, wound healing, dysplasia, pre-cancer, tumor microenvironment)
+- 2-4: Adjacent (general cancer biology with genomic or somatic component, population genetics with somatic angle, clinical studies with genomic analysis)
 - 0-1: Irrelevant (evolutionary studies in non-human models with no human application, pure methods papers with no biological insight)
- 
-Assign each paper exactly one of the following sections:
+
+Assign each paper exactly one section:
 - "Cancer Evolution": tumor phylogenetics, subclonal dynamics, clonal selection, WGD, ecDNA, sarcoma, cancer cell fraction, tumor heterogeneity
 - "Somatic Evolution": clonal hematopoiesis, somatic mosaicism, aging, non-cancer clonal expansions, developmental mosaicism
 - "Genome Instability": CIN, structural variation, chromothripsis, BFB, replication stress, DNA damage, aneuploidy, rearrangements
@@ -719,11 +686,11 @@ Assign each paper exactly one of the following sections:
 - "Phenotypic Plasticity and Epigenetic Dysregulation": cell state plasticity, phenotype switching, EMT, stromal remodeling, neural remodeling, tumor microenvironment, cell identity, fate determination, lineage plasticity, reprogramming, transdifferentiation
 - "Human Genetic Diversity and Health": GWAS, genome-wide association, PheWAS, UK Biobank, population genomics, germline structural variation, pangenome, polygenic risk, ancestry, admixture, rare variant association, complex trait genetics
 - "Other": anything that doesn't clearly fit the above
- 
+
 Return ONLY a JSON array — no prose, no fences. One object per paper:
 {"idx": number, "score": number, "section": string, "tags": [2-5 specific biological terms from the abstract]}"""
- 
- 
+
+
 def classify_papers_github(papers: list[dict], token: str, batch_size: int = 25) -> list[dict]:
     """
     Classify paper sections and tags using GitHub Models (GPT-4o mini).
@@ -733,7 +700,7 @@ def classify_papers_github(papers: list[dict], token: str, batch_size: int = 25)
     if not token:
         print("  No GITHUB_TOKEN — skipping AI classification, using keyword fallback")
         return papers
- 
+
     endpoint = "https://models.github.ai/inference/chat/completions"
     headers = {
         "Authorization": f"Bearer {token}",
@@ -741,10 +708,10 @@ def classify_papers_github(papers: list[dict], token: str, batch_size: int = 25)
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2026-03-10",
     }
- 
+
     batches = [papers[i:i+batch_size] for i in range(0, len(papers), batch_size)]
     print(f"  Classifying {len(papers)} papers in {len(batches)} batch(es) via GitHub Models...")
- 
+
     for b_idx, batch in enumerate(batches, 1):
         numbered = "\n\n".join(
             f"{j+1}. {p['title']}\n{(p.get('abstract') or '')[:600]}"
@@ -759,18 +726,18 @@ def classify_papers_github(papers: list[dict], token: str, batch_size: int = 25)
             "max_tokens": 4096,
             "temperature": 0,
         }).encode()
- 
+
         try:
             req = urllib.request.Request(endpoint, data=body, headers=headers, method="POST")
             with urllib.request.urlopen(req, timeout=40) as resp:
                 result = json.loads(resp.read())
- 
+
             raw = result["choices"][0]["message"]["content"]
             match = re.search(r'\[[\s\S]*\]', raw)
             if not match:
                 print(f"  Batch {b_idx}: no JSON array found, skipping", file=sys.stderr)
                 continue
- 
+
             json_str = match.group(0)
             try:
                 scored = json.loads(json_str)
@@ -789,7 +756,7 @@ def classify_papers_github(papers: list[dict], token: str, batch_size: int = 25)
                     print(f"  Batch {b_idx}: JSON unrecoverable, skipping", file=sys.stderr)
                     continue
             idx_map = {int(e["idx"]): e for e in scored if "idx" in e}
- 
+
             updated = 0
             for j, p in enumerate(batch):
                 e = idx_map.get(j + 1)
@@ -798,45 +765,49 @@ def classify_papers_github(papers: list[dict], token: str, batch_size: int = 25)
                     p["tags"]    = ", ".join(e.get("tags", []))
                     p["score"]   = int(e.get("score", 0))
                     updated += 1
- 
+
             print(f"  Batch {b_idx}/{len(batches)}: classified {updated}/{len(batch)} papers")
- 
+
         except urllib.error.HTTPError as e:
             body_text = e.read().decode()[:300]
             print(f"  Batch {b_idx}: HTTP {e.code} — {body_text}", file=sys.stderr)
         except Exception as e:
             print(f"  Batch {b_idx}: failed — {e}", file=sys.stderr)
- 
+
         time.sleep(1)  # polite rate limiting
- 
+
     return papers
- 
- 
+
+
 # ── Main ───────────────────────────────────────────────────────────────────────
- 
+
 def main():
     print(f"\n{'='*60}")
     print(f"  The Human Mosaic — Daily Feed Update")
     print(f"  {datetime.now().strftime('%Y-%m-%d %H:%M UTC')}")
     print(f"{'='*60}\n")
- 
+
+    # 0. Load feeds and keywords from reference sheet
+    print("0. Loading config from reference sheet...")
+    load_config()
+
     sheet_id = os.environ.get("GOOGLE_SHEET_ID", "").strip() or None
- 
+
     # 1. Fetch papers
     print(f"1. Fetching RSS feeds (last {DAYS} days)...")
     papers = fetch_rss(DAYS)
- 
+
     print(f"\n2. bioRxiv API fallback...")
     api_papers = fetch_biorxiv_api(DAYS)
- 
+
     # Merge and deduplicate by key
     all_papers: dict[str, dict] = {}
     for p in papers + api_papers:
         if p["key"] not in all_papers:
             all_papers[p["key"]] = p
- 
+
     print(f"\n   Total unique papers: {len(all_papers)}")
- 
+
     # 2b. NCBI / PubMed fallback
     print(f"\n2b. Fetching from PubMed (NCBI)...")
     ncbi_papers = fetch_ncbi(DAYS)
@@ -844,7 +815,7 @@ def main():
         if p["key"] not in all_papers:
             all_papers[p["key"]] = p
     print(f"   Total unique after NCBI: {len(all_papers)}")
- 
+
     # 2. Classify sections and tags via GitHub Models
     github_token = os.environ.get("GITHUB_TOKEN", "").strip()
     new_papers = list(all_papers.values())
@@ -853,7 +824,7 @@ def main():
         new_papers = classify_papers_github(new_papers, github_token)
     else:
         print("\n2. Skipping AI classification (no GITHUB_TOKEN)")
- 
+
     # 3. Connect to Google Sheets
     print(f"\n3. Connecting to Google Sheets...")
     client = get_client()
@@ -861,26 +832,26 @@ def main():
     ws = ensure_worksheet(sh, created)
     existing_keys = load_existing_keys(ws)
     print(f"   {len(existing_keys)} existing rows in sheet")
- 
+
     # 3. Filter by score if classification ran
     if github_token:
         before = len(new_papers)
         new_papers = [p for p in new_papers if p.get("score", 10) >= MIN_SCORE]
         print(f"  Score filter (>={MIN_SCORE}): {len(new_papers)}/{before} papers kept")
- 
+
     # 4. Append new papers
     print(f"\n4. Appending new papers...")
     n_new = append_papers(ws, new_papers, existing_keys)
- 
+
     # 4. Write sheet ID for dashboard
     write_sheet_id_to_docs(sh.id)
- 
+
     print(f"\n{'='*60}")
     print(f"  Done. {n_new} new papers added.")
     print(f"  Sheet: https://docs.google.com/spreadsheets/d/{sh.id}")
     print(f"  CSV:   https://docs.google.com/spreadsheets/d/{sh.id}/export?format=csv")
     print(f"{'='*60}\n")
- 
- 
+
+
 if __name__ == "__main__":
     main()
