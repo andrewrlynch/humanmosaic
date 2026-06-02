@@ -164,12 +164,12 @@ RSS_FEEDS = [
 
 # ── Keywords ───────────────────────────────────────────────────────────────────
 
-TIER1_KEYWORDS = [
+TIER1 = [
     "tumor evolution", "cancer evolution", "somatic evolution", "clonal evolution", "subclonal evolution", "cancer progression", "field cancerization",
     "chromosomal instability", "genomic instability", "genetic instability", "phenotype plasticity", "phenotypic plasticity", "therapeutic resistance", "somatic mosaicism", "clonal hematopoiesis"
 ]
 
-TIER2_KEYWORDS = [
+TIER2 = [
     # Mutation terms
     "somatic mutation", "mutational signature", "mutation signature", "somatic hypermutation", "APOBEC", "MMR", "mismatch repair", "HRD", "homologous recombination deficiency", "mutagenic exposure", "base editing", "DNA repair pathway",
     # ITH terms
