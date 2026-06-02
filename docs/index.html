@@ -8,8 +8,8 @@
 <style>
 :root {
   color-scheme: light;
-  --bg:     #fafaf8;
-  --bg2:    #f2f0eb;
+  --bg:     #ffffff;
+  --bg2:    #fafafa;
   --border: rgba(0,0,0,.1);
   --text:   #1a1a18;
   --text2:  #6b6b65;
@@ -109,20 +109,7 @@ td.score-cell { white-space: nowrap; }
 .tile-chevron { font-size: 9px; color: var(--text3); float: right; margin-top: 2px; transition: transform .15s; }
 .tile.open .tile-chevron { transform: rotate(90deg); }
 
-/* ── Reference panes ── */
-.ref-section { padding: 16px 24px; border-top: 0.5px solid var(--border); }
-.ref-section h3 { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--text2); margin-bottom: 10px; }
-.ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px; }
-.ref-card { background: var(--bg2); border-radius: 6px; padding: 8px 12px; font-size: 11px; }
-.ref-card .rc-label { font-weight: 500; color: var(--text); }
-.ref-card .rc-sub { color: var(--text3); font-size: 10px; margin-top: 2px; }
-.ref-tag { display: inline-block; background: var(--bg); border: 0.5px solid var(--border); border-radius: 4px; padding: 2px 7px; font-size: 11px; color: var(--text2); margin: 2px; }
-.ref-tag.t1 { background: #EEEDFE; color: #3C3489; border-color: transparent; }
-.ref-tag.t2 { background: #E1F5EE; color: #085041; border-color: transparent; }
-@media (prefers-color-scheme: dark) {
-  .ref-tag.t1 { background: #26215C; color: #AFA9EC; }
-  .ref-tag.t2 { background: #04342C; color: #5DCAA5; }
-}
+
 
 /* ── Badges ── */
 .badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 500; white-space: nowrap; margin: 1px; }
@@ -151,18 +138,20 @@ footer a { color: var(--text3); }
 <div class="site-wrap">
 
 <header>
-  <span class="logo">The Human Mosaic</span>
-  <span class="updated" id="updated">Loading…</span>
+  <span class="logo">The Human <em>Mosaic</em></span>
+  <nav style="margin-left:auto;display:flex;align-items:center;gap:16px">
+    <a href="about.html" style="font-size:12px;color:var(--text3);text-decoration:none">About ↗</a>
+    <span class="updated" id="updated">Loading…</span>
+  </nav>
 </header>
 
 <div class="about">
-    The Human Mosaic is a “This Week In”-style newsletter bringing you the cutting-edgiest research at the interface of human evolution and human health. Tracking how we change in our lifetime and, what those changes mean for our health, and how these changes ripple through populations and generations.
+  The Human Mosaic tracks the science of how our genomes change as we age — from the mutations that accumulate in a single cell to the clonal expansions that drive cancer, blood disease, and aging. Papers are fetched daily from RSS feeds and preprint servers, keyword-filtered, and scored for relevance by AI. <a href="about.html">Feeds &amp; Keywords ↗</a>
 </div>
 
 <div class="stats-bar" id="stats">
   <div class="nav-links">
-    <a href="#ref-feeds">RSS feeds</a>
-    <a href="#ref-keywords">Keywords</a>
+    <a href="about.html">About</a>
     <a href="#" id="sheet-link" target="_blank">Google Sheet ↗</a>
   </div>
 </div>
@@ -228,17 +217,7 @@ footer a { color: var(--text3); }
   <button id="next" onclick="changePage(1)">Next →</button>
 </div>
 
-<!-- Reference: RSS Feeds -->
-<div class="ref-section" id="ref-feeds">
-  <h3>RSS Feeds</h3>
-  <div class="ref-grid" id="feed-grid"><span style="font-size:12px;color:var(--text3)">Loading…</span></div>
-</div>
 
-<!-- Reference: Keywords -->
-<div class="ref-section" id="ref-keywords">
-  <h3>Keywords</h3>
-  <div id="kw-grid"><span style="font-size:12px;color:var(--text3)">Loading…</span></div>
-</div>
 
 <footer>
   Data updated daily via GitHub Actions ·
@@ -288,287 +267,5 @@ async function loadData() {
   }
 }
 
-async function loadRefData() {
-  const base = `https://docs.google.com/spreadsheets/d/${REF_SHEET_ID}/export?format=csv`;
-
-  // Feeds
-  try {
-    const r = await fetch(`${base}&gid=${FEED_GID}`);
-    if (r.ok) {
-      Papa.parse(await r.text(), { header: true, skipEmptyLines: true, complete: ({ data }) => renderFeeds(data) });
-    }
-  } catch {}
-
-  // Keywords
-  try {
-    const r = await fetch(`${base}&gid=${KW_GID}`);
-    if (r.ok) {
-      Papa.parse(await r.text(), { header: true, skipEmptyLines: true, complete: ({ data }) => renderKeywords(data) });
-    }
-  } catch {}
-}
-
-function renderFeeds(data) {
-  if (!data.length) return;
-  const grid = document.getElementById("feed-grid");
-
-  // Group by Publisher
-  const groups = {};
-  data.forEach(row => {
-    const pub = (row["Publisher"] || "Other").trim();
-    if (!groups[pub]) groups[pub] = [];
-    groups[pub].push(row);
-  });
-
-  grid.innerHTML = Object.entries(groups).sort((a,b) => a[0].localeCompare(b[0])).map(([pub, rows]) => {
-    const items = rows.map(row => {
-      const name  = (row["Source"] || "").trim();
-      const type  = (row["Type"]   || "").trim();
-      const url   = (row["Feed"]   || "").trim();
-      const badge = type === "preprint" ? "b-preprint" : "b-journal";
-      return `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:0.5px solid var(--border)">
-        <span class="badge ${badge}" style="font-size:9px;flex-shrink:0">${type}</span>
-        <span style="font-size:12px;color:var(--text);flex:1">${escHtml(name)}</span>
-        ${url ? `<a href="${escHtml(url)}" target="_blank" style="color:var(--text3);font-size:11px;flex-shrink:0">↗</a>` : ""}
-      </div>`;
-    }).join("");
-    return `<div class="ref-card" style="grid-column: span 1">
-      <div class="rc-label" style="margin-bottom:6px">${escHtml(pub)}</div>
-      ${items}
-    </div>`;
-  }).join("");
-}
-
-function renderKeywords(data) {
-  if (!data.length) return;
-  const grid = document.getElementById("kw-grid");
-
-  // Group by Keyword_Category within each Keyword_Tier
-  const tiers = {"Tier 1": {}, "Tier 2": {}};
-  data.forEach(row => {
-    const kw   = (row["Keyword"]          || "").trim();
-    const cat  = (row["Keyword_Category"] || "Other").trim();
-    const tier = (row["Keyword_Tier"]     || "").trim();
-    if (!kw || !tiers[tier]) return;
-    if (!tiers[tier][cat]) tiers[tier][cat] = [];
-    tiers[tier][cat].push(kw);
-  });
-
-  grid.innerHTML = Object.entries(tiers).map(([tier, cats]) => {
-    if (!Object.keys(cats).length) return "";
-    const cls  = tier === "Tier 1" ? "t1" : "t2";
-    const desc = tier === "Tier 1"
-      ? "Match any 1 to include paper"
-      : "Match any 2 to include paper";
-    const catBlocks = Object.entries(cats).map(([cat, kws]) =>
-      `<div style="margin-bottom:10px">
-        <div style="font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">${escHtml(cat)}</div>
-        <div>${kws.map(k => `<span class="ref-tag ${cls}">${escHtml(k)}</span>`).join("")}</div>
-      </div>`
-    ).join("");
-    return `<div style="margin-bottom:20px">
-      <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px">${tier}</div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:10px">${desc}</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">${catBlocks}</div>
-    </div>`;
-  }).join("");
-}
-
-// ── Filters & sort ────────────────────────────────────────────────────────────
-function populateSectionFilter(data) {
-  const sel = document.getElementById("fSection"), cur = sel.value;
-  const secs = [...new Set(data.map(d => d.section || "Other"))].sort();
-  sel.innerHTML = '<option value="">All sections</option>';
-  secs.forEach(s => { const o = document.createElement("option"); o.value = s; o.textContent = s; if (s === cur) o.selected = true; sel.appendChild(o); });
-}
-
-function applyFilters() {
-  const q  = document.getElementById("search").value.toLowerCase();
-  const fs = document.getElementById("fSection").value;
-  const ft = document.getElementById("fType").value;
-  const fd = parseInt(document.getElementById("fDays").value);
-  const cutoff = fd ? new Date(Date.now() - fd * 86400000) : null;
-
-  filtered = allData.filter(p => {
-    if (cutoff) { const d = new Date(p.date || p.fetched_at || ""); if (!isNaN(d) && d < cutoff) return false; }
-    if (fs && (p.section || "Other") !== fs) return false;
-    if (ft && p.type !== ft) return false;
-    if (q) { const h = ((p.title||"")+(p.authors||"")+(p.abstract||"")+(p.source||"")).toLowerCase(); if (!h.includes(q)) return false; }
-    return true;
-  });
-
-  filtered.sort((a, b) => {
-    let av = (a[sortCol] || "").toString(), bv = (b[sortCol] || "").toString();
-    if (sortCol === "date") {
-      const da = new Date(av), db = new Date(bv);
-      if (isNaN(da) && isNaN(db)) return 0;
-      if (isNaN(da)) return 1; if (isNaN(db)) return -1;
-      return sortDir * (da - db);
-    }
-    if (sortCol === "score") {
-      return sortDir * ((parseFloat(av) || 0) - (parseFloat(bv) || 0));
-    }
-    return sortDir * av.toLowerCase().localeCompare(bv.toLowerCase());
-  });
-
-  const sel = document.getElementById("fSort");
-  const target = `${sortCol}:${sortDir}`;
-  for (const opt of sel.options) { if (opt.value === target) { sel.value = target; break; } }
-
-  page = 0;
-  renderStats();
-  renderPage();
-}
-
-function renderStats() {
-  const j  = filtered.filter(p => p.type === "journal").length;
-  const pr = filtered.filter(p => p.type === "preprint").length;
-  document.getElementById("stats").innerHTML =
-    `<div class="stat"><strong>${filtered.length}</strong> papers</div>
-     <div class="stat"><strong>${j}</strong> journal</div>
-     <div class="stat"><strong>${pr}</strong> preprint</div>
-     <div class="nav-links">
-       <a href="#ref-feeds">RSS feeds</a>
-       <a href="#ref-keywords">Keywords</a>
-       <a href="#" id="sheet-link" target="_blank">Google Sheet ↗</a>
-     </div>`;
-  const sheetId = document.getElementById("footer-sheet-link")?.href.split("/d/")[1]?.split("/")[0];
-  if (sheetId) {
-    const sl = document.getElementById("sheet-link");
-    if (sl) sl.href = `https://docs.google.com/spreadsheets/d/${sheetId}`;
-  }
-}
-
-// ── Render ────────────────────────────────────────────────────────────────────
-function escHtml(s) { return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-
-function badgesHtml(p, maxTags) {
-  const btype = p.type === "preprint" ? "b-preprint" : "b-journal";
-  const tags  = (p.tags || "").split(",").filter(Boolean).slice(0, maxTags)
-                  .map(t => `<span class="badge b-sec">${escHtml(t.trim())}</span>`).join("");
-  return `<span class="badge ${btype}">${escHtml(p.source||"")}</span>
-          <span class="badge b-sec">${escHtml((p.section||"Other"))}</span>
-          ${tags}`;
-}
-
-function toggleAbstract(id) {
-  if (currentView === "table") {
-    const dr = document.getElementById("row-"+id), ar = document.getElementById("abs-"+id);
-    if (!dr || !ar) return;
-    const open = ar.classList.contains("open");
-    dr.classList.toggle("expanded", !open); ar.classList.toggle("open", !open);
-  } else {
-    const tile = document.getElementById("tile-"+id);
-    if (tile) tile.classList.toggle("open");
-  }
-}
-
-function renderPage() {
-  const start = page * PAGE_SIZE, slice = filtered.slice(start, start + PAGE_SIZE), now = Date.now();
-  const total = Math.ceil(filtered.length / PAGE_SIZE);
-
-  if (currentView === "table") {
-    document.getElementById("tbody").innerHTML = !slice.length
-      ? '<tr><td colspan="6" class="empty">No papers match</td></tr>'
-      : slice.map((p, i) => {
-          const id      = start + i;
-          const link    = p.url || (p.doi ? `https://doi.org/${p.doi}` : "#");
-          const fetched = new Date(p.fetched_at || "");
-          const isNew   = !isNaN(fetched) && (now - fetched) < 86400000;
-          const dateStr = p.date ? new Date(p.date).toLocaleDateString("en-US", {month:"short",day:"numeric",year:"numeric"}) : "";
-          const btype   = p.type === "preprint" ? "b-preprint" : "b-journal";
-          const section = escHtml(p.section || "Other");
-          const tags    = (p.tags||"").split(",").filter(Boolean).slice(0,4).map(t=>`<span class="badge b-sec">${escHtml(t.trim())}</span>`).join(" ");
-          const abs     = escHtml(p.abstract||"");
-          const scoreNum = p.score !== undefined && p.score !== "" ? parseInt(p.score) : null;
-          const scoreBadge = scoreNum !== null ? `<span class="badge b-sec" style="font-variant-numeric:tabular-nums">${scoreNum}/10</span>` : "";
-          return `<tr class="data-row" id="row-${id}" onclick="${abs?`toggleAbstract(${id})`:''}">
-            <td class="title">
-              <span class="chevron">${abs?"▶":""}</span>${isNew?'<span class="badge b-new">new</span> ':''}
-              <a href="${escHtml(link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escHtml(p.title||"")}</a>
-              <div style="font-size:11px;color:var(--text2);margin-top:2px">${escHtml(p.authors||"")}</div>
-            </td>
-            <td class="muted"><span class="badge ${btype}">${escHtml(p.source||"")}</span></td>
-            <td class="muted"><span class="badge b-sec">${section}</span></td>
-            <td class="muted">${dateStr}</td>
-            <td class="score-cell">${scoreBadge}</td>
-            <td>${tags}</td>
-          </tr>
-          <tr class="abstract-row" id="abs-${id}">
-            <td colspan="6"><div class="abstract-inner">${abs}</div></td>
-          </tr>`;
-        }).join("");
-
-    document.querySelectorAll("thead th[data-col]").forEach(th => {
-      th.classList.remove("sort-asc","sort-desc");
-      if (th.dataset.col === sortCol) th.classList.add(sortDir===1?"sort-asc":"sort-desc");
-    });
-
-  } else {
-    document.getElementById("masonry").innerHTML = !slice.length
-      ? '<div class="empty">No papers match</div>'
-      : slice.map((p, i) => {
-          const id      = start + i;
-          const link    = p.url || (p.doi ? `https://doi.org/${p.doi}` : "#");
-          const fetched = new Date(p.fetched_at || "");
-          const isNew   = !isNaN(fetched) && (now - fetched) < 86400000;
-          const dateStr = p.date ? new Date(p.date).toLocaleDateString("en-US", {month:"short",day:"numeric",year:"numeric"}) : "";
-          const abs     = escHtml(p.abstract||"");
-          const scoreNum = p.score !== undefined && p.score !== "" ? parseInt(p.score) : null;
-          return `<div class="tile" id="tile-${id}" onclick="${abs?`toggleAbstract(${id})`:''}">
-            ${abs?'<span class="tile-chevron">▶</span>':''}
-            ${isNew?'<span class="badge b-new" style="float:right;margin-left:4px">new</span>':''}
-            <div class="tile-title"><a href="${escHtml(link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escHtml(p.title||"")}</a></div>
-            <div class="tile-meta">${escHtml(p.authors||"")}${p.authors&&dateStr?" · ":""}${dateStr}</div>
-            <div class="tile-badges">${badgesHtml(p,3)}${scoreNum!==null?`<span class="badge b-sec">${scoreNum}/10</span>`:""}</div>
-            ${abs?`<div class="tile-abstract">${abs}</div>`:""}
-          </div>`;
-        }).join("");
-  }
-
-  document.getElementById("page-info").textContent = `Page ${page+1} of ${total||1}  (${filtered.length} papers)`;
-  document.getElementById("prev").disabled = page === 0;
-  document.getElementById("next").disabled = page >= total - 1;
-}
-
-function sortBy(col) {
-  sortDir = (sortCol === col) ? sortDir * -1 : -1;
-  sortCol = col;
-  page = 0;
-  applyFilters();
-}
-
-function sortFromSelect() {
-  const [col, dir] = document.getElementById("fSort").value.split(":");
-  sortCol = col; sortDir = parseInt(dir);
-  page = 0;
-  applyFilters();
-}
-
-function changePage(d) {
-  const total = Math.ceil(filtered.length / PAGE_SIZE);
-  page = Math.max(0, Math.min(page + d, total - 1));
-  renderPage();
-  window.scrollTo(0, 0);
-}
-
-function changePageSize() {
-  PAGE_SIZE = parseInt(document.getElementById("fPageSize").value);
-  page = 0;
-  renderPage();
-}
-
-function setView(v) {
-  currentView = v;
-  document.getElementById("table-view").style.display = v === "table" ? "" : "none";
-  document.getElementById("tile-view").classList.toggle("visible", v === "tile");
-  document.getElementById("btn-table").classList.toggle("active", v === "table");
-  document.getElementById("btn-tile").classList.toggle("active", v === "tile");
-  renderPage();
-}
 
 loadData();
-loadRefData();
-</script>
-</body>
-</html>

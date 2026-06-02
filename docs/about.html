@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Human Mosaic — About</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+:root {
+  color-scheme: light;
+  --bg:     #fafaf8;
+  --bg2:    #f2f0eb;
+  --border: rgba(0,0,0,.1);
+  --text:   #1a1a18;
+  --text2:  #6b6b65;
+  --text3:  #9b9b95;
+  --accent: #2a5298;
+  --mono:   "SFMono-Regular","Consolas",monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg:     #111110;
+    --bg2:    #1c1c1a;
+    --border: rgba(255,255,255,.1);
+    --text:   #e8e4dc;
+    --text2:  #888880;
+    --text3:  #555550;
+    --accent: #7ba7e8;
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; }
+.site-wrap { max-width: 1440px; margin: 0 auto; }
+
+header { border-bottom: 0.5px solid var(--border); padding: 20px 24px 16px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; }
+.logo { font-size: 20px; font-weight: 500; letter-spacing: -.02em; }
+.logo em { font-style: italic; color: var(--accent); }
+.logo a { text-decoration: none; color: inherit; }
+.nav { margin-left: auto; display: flex; gap: 16px; font-size: 12px; }
+.nav a { color: var(--text3); text-decoration: none; }
+.nav a:hover { color: var(--accent); }
+.nav a.active { color: var(--text); font-weight: 500; }
+
+.page-intro { padding: 20px 24px 0; max-width: 720px; }
+.page-intro h1 { font-size: 18px; font-weight: 500; margin-bottom: 8px; }
+.page-intro p  { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+.section { padding: 24px 24px 0; }
+.section-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; border-bottom: 0.5px solid var(--border); padding-bottom: 10px; }
+.section-header h2 { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: .07em; color: var(--text2); }
+.section-header .count { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+
+/* ── Masonry ── */
+.masonry { columns: 4 220px; column-gap: 10px; }
+.tile { break-inside: avoid; background: var(--bg); border: 0.5px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; display: inline-block; width: 100%; }
+.tile-header { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tile-header .pub-name { flex: 1; }
+.tile-header .tile-count { font-size: 10px; color: var(--text3); font-family: var(--mono); flex-shrink: 0; }
+.tile-divider { border: none; border-top: 0.5px solid var(--border); margin: 6px 0; }
+
+/* Feed rows */
+.feed-row { display: flex; align-items: center; gap: 6px; padding: 3px 0; }
+.feed-row:not(:last-child) { border-bottom: 0.5px solid var(--border); }
+.feed-name { font-size: 11px; color: var(--text); flex: 1; line-height: 1.3; }
+.feed-link { color: var(--text3); font-size: 11px; text-decoration: none; flex-shrink: 0; opacity: 0; transition: opacity .1s; }
+.feed-row:hover .feed-link { opacity: 1; }
+
+/* Keyword tags */
+.kw-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 500; white-space: nowrap; }
+.b-preprint { background: #EEEDFE; color: #3C3489; }
+.b-journal  { background: #E1F5EE; color: #085041; }
+.t1 { background: #EEEDFE; color: #3C3489; }
+.t2 { background: #E1F5EE; color: #085041; }
+@media (prefers-color-scheme: dark) {
+  .b-preprint, .t1 { background: #26215C; color: #AFA9EC; }
+  .b-journal,  .t2 { background: #04342C; color: #5DCAA5; }
+}
+
+.loading { padding: 2rem 24px; color: var(--text3); font-size: 13px; }
+footer { padding: 14px 24px; margin-top: 32px; font-size: 11px; color: var(--text3); font-family: var(--mono); border-top: 0.5px solid var(--border); }
+footer a { color: var(--text3); }
+</style>
+</head>
+<body>
+<div class="site-wrap">
+
+<header>
+  <span class="logo"><a href="index.html">The Human <em>Mosaic</em></a></span>
+  <nav class="nav">
+    <a href="index.html">Feed</a>
+    <a href="about.html" class="active">About</a>
+  </nav>
+</header>
+
+<div class="page-intro">
+  <h1>About The Human Mosaic</h1>
+  <p>The Human Mosaic covers the emerging science of somatic evolution — how mutations, chromosomal instability, epigenetic change, and clonal selection reshape the human genome across a lifetime. Papers are fetched daily from the sources below, keyword-filtered for relevance, and scored by AI before appearing in the feed.</p>
+</div>
+
+<!-- RSS Feeds -->
+<div class="section">
+  <div class="section-header">
+    <h2>RSS Feeds</h2>
+    <span class="count" id="feed-count">loading…</span>
+  </div>
+  <div class="masonry" id="feed-masonry">
+    <div class="loading">Loading feeds…</div>
+  </div>
+</div>
+
+<!-- Keywords -->
+<div class="section" style="padding-bottom: 32px">
+  <div class="section-header">
+    <h2>Keywords</h2>
+    <span class="count" id="kw-count">loading…</span>
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:4px">Tier 1 — match any 1 to include paper</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px">High-precision terms specific to somatic evolution. A single match is sufficient.</div>
+    <div class="masonry" id="kw-t1-masonry"><div class="loading">Loading…</div></div>
+  </div>
+
+  <div>
+    <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:4px">Tier 2 — match any 2 to include paper</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px">Broader genomics terms. Requires 2 matches to reduce false positives.</div>
+    <div class="masonry" id="kw-t2-masonry"><div class="loading">Loading…</div></div>
+  </div>
+</div>
+
+<footer>
+  The Human Mosaic · Updated daily via GitHub Actions ·
+  <a href="index.html">← Back to feed</a>
+</footer>
+
+</div>
+<script>
+const REF_SHEET_ID = "18rT6XT_SfOvQQi1xkdodcgCmKu9FeF_SHIOb06rFfC0";
+const KW_GID   = "0";
+const FEED_GID = "1651663853";
+
+function escHtml(s) {
+  return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+async function loadRefData() {
+  const base = `https://docs.google.com/spreadsheets/d/${REF_SHEET_ID}/export?format=csv`;
+
+  // Feeds
+  try {
+    const r = await fetch(`${base}&gid=${FEED_GID}`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    Papa.parse(await r.text(), {
+      header: true, skipEmptyLines: true,
+      complete: ({ data }) => renderFeeds(data)
+    });
+  } catch (e) {
+    document.getElementById("feed-masonry").innerHTML =
+      `<div class="loading">Failed to load feeds: ${e.message}</div>`;
+  }
+
+  // Keywords
+  try {
+    const r = await fetch(`${base}&gid=${KW_GID}`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    Papa.parse(await r.text(), {
+      header: true, skipEmptyLines: true,
+      complete: ({ data }) => renderKeywords(data)
+    });
+  } catch (e) {
+    document.getElementById("kw-t1-masonry").innerHTML =
+      `<div class="loading">Failed to load keywords: ${e.message}</div>`;
+  }
+}
+
+function renderFeeds(data) {
+  // Group by Publisher
+  const groups = {};
+  data.forEach(row => {
+    const pub  = (row["Publisher"] || "Other").trim();
+    const name = (row["Source"]    || "").trim();
+    const url  = (row["Feed"]      || "").trim();
+    const type = (row["Type"]      || "journal").trim().toLowerCase();
+    if (!name || !url) return;
+    if (!groups[pub]) groups[pub] = [];
+    groups[pub].push({ name, url, type });
+  });
+
+  const sorted = Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0]));
+  const totalFeeds = data.filter(r => r["Feed"]).length;
+  document.getElementById("feed-count").textContent =
+    `${totalFeeds} feeds · ${sorted.length} publishers`;
+
+  document.getElementById("feed-masonry").innerHTML = sorted.map(([pub, feeds]) => {
+    const rows = feeds.map(f => {
+      const badge = f.type === "preprint" ? "b-preprint" : "b-journal";
+      return `<div class="feed-row">
+        <span class="badge ${badge}" style="font-size:9px;flex-shrink:0">${f.type}</span>
+        <span class="feed-name">${escHtml(f.name)}</span>
+        <a class="feed-link" href="${escHtml(f.url)}" target="_blank" rel="noopener" title="Open feed">↗</a>
+      </div>`;
+    }).join("");
+    return `<div class="tile">
+      <div class="tile-header">
+        <span class="pub-name">${escHtml(pub)}</span>
+        <span class="tile-count">${feeds.length}</span>
+      </div>
+      <hr class="tile-divider">
+      ${rows}
+    </div>`;
+  }).join("");
+}
+
+function renderKeywords(data) {
+  // Split by tier, group by category within each tier
+  const tiers = { "Tier 1": {}, "Tier 2": {} };
+  let t1count = 0, t2count = 0;
+
+  data.forEach(row => {
+    const kw   = (row["Keyword"]          || "").trim();
+    const cat  = (row["Keyword_Category"] || "Other").trim();
+    const tier = (row["Keyword_Tier"]     || "").trim();
+    if (!kw) return;
+    if (tier === "Tier 1") {
+      if (!tiers["Tier 1"][cat]) tiers["Tier 1"][cat] = [];
+      tiers["Tier 1"][cat].push(kw);
+      t1count++;
+    } else if (tier === "Tier 2") {
+      if (!tiers["Tier 2"][cat]) tiers["Tier 2"][cat] = [];
+      tiers["Tier 2"][cat].push(kw);
+      t2count++;
+    }
+  });
+
+  document.getElementById("kw-count").textContent =
+    `${t1count} tier 1 · ${t2count} tier 2`;
+
+  function buildMasonry(tierData, cls) {
+    return Object.entries(tierData)
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([cat, kws]) => {
+        const tags = kws.map(k => `<span class="badge ${cls}">${escHtml(k)}</span>`).join(" ");
+        return `<div class="tile">
+          <div class="tile-header">
+            <span class="pub-name">${escHtml(cat)}</span>
+            <span class="tile-count">${kws.length}</span>
+          </div>
+          <hr class="tile-divider">
+          <div class="kw-tags">${tags}</div>
+        </div>`;
+      }).join("");
+  }
+
+  document.getElementById("kw-t1-masonry").innerHTML =
+    buildMasonry(tiers["Tier 1"], "t1") || '<div class="loading">No Tier 1 keywords found</div>';
+  document.getElementById("kw-t2-masonry").innerHTML =
+    buildMasonry(tiers["Tier 2"], "t2") || '<div class="loading">No Tier 2 keywords found</div>';
+}
+
+loadRefData();
+</script>
+</body>
+</html>
