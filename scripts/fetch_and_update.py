@@ -376,46 +376,230 @@ def fetch_rss(days: int) -> list[dict]:
  
  
 def fetch_biorxiv_api(days: int) -> list[dict]:
-    end = datetime.now()
-    start = end - timedelta(days=days)
+    """
+    Fetch all papers from bioRxiv/medRxiv for the date range, then keyword-filter.
+    No category predetermination — paginates through all submissions so nothing
+    is missed regardless of how bioRxiv categorises the paper.
+    Supports both legacy 10.1101 and new 10.64898 (openRxiv) DOI prefixes.
+    """
+    end      = datetime.now()
+    start    = end - timedelta(days=days)
     date_str = f"{start.strftime('%Y-%m-%d')}/{end.strftime('%Y-%m-%d')}"
-    papers = []
+    papers   = []
     seen: set[str] = set()
+ 
     for server in ["biorxiv", "medrxiv"]:
-        try:
-            r = requests.get(
-                f"https://api.biorxiv.org/details/{server}/{date_str}/0/json",
-                timeout=30
-            )
-            r.raise_for_status()
-            for p in r.json().get("collection", []):
-                doi = p.get("doi", "")
-                if doi in seen:
-                    continue
-                seen.add(doi)
-                title    = p.get("title", "")
-                abstract = p.get("abstract", "")
-                combined = title + " " + abstract
-                if not keyword_passes(combined):
-                    continue
-                papers.append({
-                    "key":        paper_key(title, doi),
-                    "title":      title,
-                    "authors":    p.get("authors", ""),
-                    "source":     f"bioRxiv API ({p.get('category','')})",
-                    "date":       p.get("date", ""),
-                    "doi":        doi,
-                    "url":        f"https://doi.org/{doi}",
-                    "type":       "preprint",
-                    "section":    classify_section(combined),
-                    "tags":       extract_tags(combined),
-                    "abstract":   abstract,
-                    "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
-                })
-        except Exception as e:
-            print(f"  bioRxiv API ({server}) failed: {e}", file=sys.stderr)
-    print(f"  [bioRxiv API] {len(papers)} papers")
+        cursor = 0
+        server_total = None
+        while True:
+            try:
+                url = f"https://api.biorxiv.org/details/{server}/{date_str}/{cursor}/json"
+                r = requests.get(url, timeout=30)
+                r.raise_for_status()
+                data       = r.json()
+                collection = data.get("collection", [])
+                messages   = data.get("messages", [{}])
+ 
+                if server_total is None:
+                    server_total = int(messages[0].get("count", 0)) if messages else 0
+                    print(f"  [{server}] {server_total} total papers in window")
+ 
+                for p in collection:
+                    doi = p.get("doi", "")
+                    doi_base = re.sub(r"v\d+$", "", doi).strip()
+                    if doi_base in seen:
+                        continue
+                    seen.add(doi_base)
+ 
+                    title    = p.get("title", "")
+                    abstract = p.get("abstract", "")
+                    combined = title + " " + abstract
+                    if not keyword_passes(combined):
+                        continue
+ 
+                    # Use biorxiv.org URL directly — more reliable than doi.org
+                    # for newly posted 10.64898 papers (doi.org can take 24h to resolve)
+                    biorxiv_url = f"https://www.biorxiv.org/content/{doi}"
+ 
+                    papers.append({
+                        "key":        paper_key(title, doi_base),
+                        "title":      title,
+                        "authors":    p.get("authors", ""),
+                        "source":     f"bioRxiv ({p.get('category', '')})",
+                        "date":       p.get("date", ""),
+                        "doi":        doi_base,
+                        "url":        biorxiv_url,
+                        "type":       "preprint",
+                        "section":    classify_section(combined),
+                        "tags":       extract_tags(combined),
+                        "abstract":   abstract,
+                        "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+                    })
+ 
+                cursor += len(collection)
+                if not collection or (server_total and cursor >= server_total):
+                    break
+ 
+            except Exception as e:
+                print(f"  bioRxiv API ({server} cursor={cursor}) failed: {e}", file=sys.stderr)
+                break
+ 
+            time.sleep(0.3)
+ 
+    print(f"  [bioRxiv API] {len(papers)} keyword-matched papers")
     return papers
+ 
+ 
+# ── NCBI / PubMed ──────────────────────────────────────────────────────────────
+ 
+NCBI_JOURNALS = [
+    "Nature", "Nature genetics", "Nature cancer", "Nature methods",
+    "Nature communications", "Science", "Cell", "Cancer cell",
+    "Cell genomics", "Genome research", "Genome biology",
+    "Cancer discovery", "Cancer research", "Clinical cancer research",
+    "PLOS genetics", "eLife", "Molecular cell", "Developmental cell",
+    "American journal of human genetics", "Human molecular genetics",
+    "Bioinformatics", "Briefings in bioinformatics",
+    "Nucleic acids research", "Blood", "Journal of clinical oncology",
+]
+ 
+NCBI_QUERY_TERMS = [
+    "chromosomal instability", "somatic evolution", "structural variation",
+    "extrachromosomal DNA", "ecDNA", "tumor evolution", "copy number variation",
+    "whole genome doubling", "mutational signatures", "clonal evolution",
+    "chromothripsis", "chromoplexy", "cancer genome sequencing",
+    "subclonal", "aneuploidy", "sarcoma genomics", "cancer phylogeny",
+    "breakage fusion bridge", "allele specific copy number",
+    "population genomics", "human genetic diversity", "pangenome",
+    "polygenic risk score", "germline structural variation",
+    "genome wide association", "ancestry inference",
+    "clonal hematopoiesis", "somatic mosaicism", "tumor heterogeneity",
+    "phenotypic plasticity", "lineage plasticity", "dedifferentiation",
+]
+ 
+NCBI_BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
+ 
+ 
+def _ncbi_build_query(days: int, journals: list[str] | None = None) -> str:
+    end   = datetime.now()
+    start = end - timedelta(days=days)
+    date_filter = f"{start.strftime('%Y/%m/%d')}:{end.strftime('%Y/%m/%d')}[PDAT]"
+    kw_block = " OR ".join(f'"{t}"[TIAB]' for t in NCBI_QUERY_TERMS)
+    if journals:
+        journal_block = " OR ".join(f'"{j}"[TA]' for j in journals)
+        return f"({kw_block}) AND ({journal_block}) AND {date_filter}"
+    return f"({kw_block}) AND {date_filter}"
+ 
+ 
+def _ncbi_efetch_batch(pmids: list[str], email: str = "digest@humanmosaic.io") -> list[dict]:
+    import xml.etree.ElementTree as ET
+    if not pmids:
+        return []
+    try:
+        r = requests.get(f"{NCBI_BASE}/efetch.fcgi", params={
+            "db": "pubmed", "id": ",".join(pmids),
+            "retmode": "xml", "rettype": "abstract", "email": email,
+        }, timeout=30)
+        r.raise_for_status()
+    except Exception as e:
+        print(f"  efetch failed: {e}", file=sys.stderr)
+        return []
+ 
+    papers = []
+    try:
+        root = ET.fromstring(r.content)
+    except ET.ParseError as e:
+        print(f"  XML parse error: {e}", file=sys.stderr)
+        return []
+ 
+    for article in root.findall(".//PubmedArticle"):
+        try:
+            title_el = article.find(".//ArticleTitle")
+            title    = "".join(title_el.itertext()).strip() if title_el is not None else ""
+            abstract = " ".join(" ".join("".join(el.itertext()).split())
+                                for el in article.findall(".//AbstractText"))
+            author_els = article.findall(".//Author")
+            authors = []
+            for a in author_els[:3]:
+                last = a.findtext("LastName", "")
+                fore = a.findtext("ForeName", "")
+                if last:
+                    authors.append(f"{last} {fore}".strip())
+            author_str = ", ".join(authors) + (" et al." if len(author_els) > 3 else "")
+            journal = (article.findtext(".//Journal/Title", "")
+                       or article.findtext(".//ISOAbbreviation", ""))
+            doi = ""
+            for id_el in article.findall(".//ArticleId"):
+                if id_el.get("IdType") == "doi":
+                    doi = clean_doi(id_el.text or "")
+                    break
+            pmid_el  = article.find(".//PMID")
+            pmid     = pmid_el.text if pmid_el is not None else ""
+            pub_date = article.find(".//PubDate")
+            if pub_date is not None:
+                date_str = "-".join(filter(None, [
+                    pub_date.findtext("Year", ""),
+                    pub_date.findtext("Month", ""),
+                    pub_date.findtext("Day", ""),
+                ]))
+            else:
+                date_str = ""
+            url = (f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/" if pmid
+                   else (f"https://doi.org/{doi}" if doi else ""))
+            combined = title + " " + abstract
+            papers.append({
+                "key":        paper_key(title, doi),
+                "title":      title,
+                "abstract":   abstract,
+                "authors":    author_str,
+                "url":        url,
+                "doi":        doi,
+                "source":     journal or "PubMed",
+                "date":       date_str,
+                "type":       "journal",
+                "section":    classify_section(combined),
+                "tags":       extract_tags(combined),
+                "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+            })
+        except Exception as e:
+            print(f"  Error parsing PubMed article: {e}", file=sys.stderr)
+            continue
+    return papers
+ 
+ 
+def fetch_ncbi(days: int, email: str = "digest@humanmosaic.io",
+               max_results: int = 200) -> list[dict]:
+    """Search PubMed for recent papers matching NCBI_QUERY_TERMS in NCBI_JOURNALS."""
+    query = _ncbi_build_query(days, NCBI_JOURNALS)
+    print(f"  PubMed query: {query[:100]}...")
+    try:
+        r = requests.get(f"{NCBI_BASE}/esearch.fcgi", params={
+            "db": "pubmed", "term": query,
+            "retmax": max_results, "retmode": "json", "email": email,
+        }, timeout=30)
+        r.raise_for_status()
+        data = r.json()
+    except Exception as e:
+        print(f"  PubMed esearch failed: {e}", file=sys.stderr)
+        return []
+ 
+    pmids = data.get("esearchresult", {}).get("idlist", [])
+    total = data.get("esearchresult", {}).get("count", "?")
+    print(f"  PubMed: {len(pmids)} PMIDs (of {total} total matches)")
+    if not pmids:
+        return []
+ 
+    papers = []
+    for i in range(0, len(pmids), 50):
+        papers.extend(_ncbi_efetch_batch(pmids[i:i+50], email))
+        time.sleep(0.4)
+ 
+    # Keyword filter — PubMed query is broad, filter to our tiers
+    before = len(papers)
+    papers = [p for p in papers if keyword_passes(p["title"] + " " + p["abstract"])]
+    print(f"  PubMed: {len(papers)}/{before} papers after keyword filter")
+    return papers
+ 
  
 # ── Google Sheets ──────────────────────────────────────────────────────────────
  
@@ -563,7 +747,7 @@ def classify_papers_github(papers: list[dict], token: str, batch_size: int = 25)
  
     for b_idx, batch in enumerate(batches, 1):
         numbered = "\n\n".join(
-            f"{j+1}. {p['title']}\n{(p.get('abstract') or '')[:400]}"
+            f"{j+1}. {p['title']}\n{(p.get('abstract') or '')[:600]}"
             for j, p in enumerate(batch)
         )
         body = json.dumps({
@@ -652,6 +836,14 @@ def main():
             all_papers[p["key"]] = p
  
     print(f"\n   Total unique papers: {len(all_papers)}")
+ 
+    # 2b. NCBI / PubMed fallback
+    print(f"\n2b. Fetching from PubMed (NCBI)...")
+    ncbi_papers = fetch_ncbi(DAYS)
+    for p in ncbi_papers:
+        if p["key"] not in all_papers:
+            all_papers[p["key"]] = p
+    print(f"   Total unique after NCBI: {len(all_papers)}")
  
     # 2. Classify sections and tags via GitHub Models
     github_token = os.environ.get("GITHUB_TOKEN", "").strip()
