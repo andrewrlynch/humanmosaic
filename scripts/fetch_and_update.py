@@ -80,7 +80,6 @@ RSS_FEEDS = [
     # BMJ
     ("Gut",                                 "https://gut.bmj.com/rss/current.xml",                                        "journal"),
     ("BMJ Clinical Genetics & Genomics",    "https://jmg.bmj.com/rss/current.xml",                                        "journal"),
-    ("BMJ Medical Genetics",                "https://gim.bmjjournals.com/rss/current.xml",                                "journal"),
     ("BMJ Clinical Pathology",              "https://jcp.bmj.com/rss/current.xml",                                        "journal"),
  
     # AACR
@@ -202,7 +201,7 @@ SECTIONS = [
 ]
 
 # ── Utilities ──────────────────────────────────────────────────────────────────
-
+ 
 def strip_html(text: str) -> str:
     text = re.sub(r"<[^>]+>", " ", text or "")
     text = re.sub(r"&amp;", "&", text)
@@ -211,26 +210,26 @@ def strip_html(text: str) -> str:
     text = re.sub(r"&nbsp;", " ", text)
     text = re.sub(r"&#[0-9]+;", "", text)
     return " ".join(text.split())
-
-
+ 
+ 
 def clean_doi(doi: str) -> str:
     if not doi:
         return ""
     return doi.split("?")[0].split("#")[0].rstrip("./,;").strip()
-
-
+ 
+ 
 def title_key(title: str) -> str:
     t = (title or "").lower()
     t = re.sub(r"[^a-z0-9\s]", " ", t)
     return re.sub(r"\s+", " ", t).strip()
-
-
+ 
+ 
 def paper_key(title: str, doi: str) -> str:
     if doi:
         return f"doi:{doi.strip()}"
     return f"title:{title_key(title)[:80]}"
-
-
+ 
+ 
 def parse_date(entry) -> datetime | None:
     for field in ("published", "updated"):
         val = entry.get(f"{field}_parsed")
@@ -246,31 +245,31 @@ def parse_date(entry) -> datetime | None:
             except Exception:
                 pass
     return None
-
-
+ 
+ 
 def keyword_passes(text: str) -> bool:
     t = text.lower()
     if any(k.lower() in t for k in TIER1):
         return True
     return sum(1 for k in TIER2 if k.lower() in t) >= 2
-
-
+ 
+ 
 def classify_section(text: str) -> str:
     t = text.lower()
     for section, keywords in SECTIONS:
         if any(k.lower() in t for k in keywords):
             return section
     return "Other"
-
-
+ 
+ 
 def extract_tags(text: str) -> str:
     t = text.lower()
     all_kw = TIER1 + TIER2
     hits = [k for k in all_kw if k.lower() in t]
     unique = list(dict.fromkeys(hits))
     return ", ".join(unique[:5])
-
-
+ 
+ 
 def extract_authors(entry) -> str:
     authors_list = entry.get("authors", [])
     if authors_list and isinstance(authors_list, list):
@@ -286,14 +285,14 @@ def extract_authors(entry) -> str:
             return ", ".join(parts[:3]) + suffix
         return author_str.strip()
     return ""
-
+ 
 # ── Fetch ──────────────────────────────────────────────────────────────────────
-
+ 
 def fetch_rss(days: int) -> list[dict]:
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
     papers = []
     seen_keys: set[str] = set()
-
+ 
     for label, url, feed_type in RSS_FEEDS:
         try:
             r = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
@@ -303,14 +302,14 @@ def fetch_rss(days: int) -> list[dict]:
                 pub_date = parse_date(entry)
                 if pub_date and pub_date < cutoff:
                     continue
-
+ 
                 link = entry.get("link", "")
                 title = strip_html(entry.get("title", "")).strip()
                 abstract = strip_html(entry.get("summary", "")).strip()
-
+ 
                 if not title or len(title) < 10:
                     continue
-
+ 
                 # DOI extraction
                 doi = ""
                 for tag in entry.get("tags", []):
@@ -324,16 +323,16 @@ def fetch_rss(days: int) -> list[dict]:
                     m = re.search(r"10\.\d{4,}/[^\s?#]+", link)
                     if m:
                         doi = clean_doi(m.group(0))
-
+ 
                 key = paper_key(title, doi)
                 if key in seen_keys:
                     continue
                 seen_keys.add(key)
-
+ 
                 combined = title + " " + abstract
                 if not keyword_passes(combined):
                     continue
-
+ 
                 papers.append({
                     "key":        key,
                     "title":      title,
@@ -353,10 +352,10 @@ def fetch_rss(days: int) -> list[dict]:
         except Exception as e:
             print(f"  [{label}] FAILED: {e}", file=sys.stderr)
         time.sleep(0.3)
-
+ 
     return papers
-
-
+ 
+ 
 def fetch_biorxiv_api(days: int) -> list[dict]:
     end = datetime.now()
     start = end - timedelta(days=days)
@@ -398,9 +397,9 @@ def fetch_biorxiv_api(days: int) -> list[dict]:
             print(f"  bioRxiv API ({server}) failed: {e}", file=sys.stderr)
     print(f"  [bioRxiv API] {len(papers)} papers")
     return papers
-
+ 
 # ── Google Sheets ──────────────────────────────────────────────────────────────
-
+ 
 def get_client() -> gspread.Client:
     sa_json = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
     if not sa_json:
@@ -408,8 +407,8 @@ def get_client() -> gspread.Client:
     info = json.loads(sa_json)
     creds = Credentials.from_service_account_info(info, scopes=SCOPES)
     return gspread.authorize(creds)
-
-
+ 
+ 
 def get_or_create_sheet(client: gspread.Client, sheet_id: str | None) -> tuple[gspread.Spreadsheet, bool]:
     created = False
     if sheet_id:
@@ -419,29 +418,29 @@ def get_or_create_sheet(client: gspread.Client, sheet_id: str | None) -> tuple[g
             return sh, created
         except Exception:
             print(f"  Sheet {sheet_id} not found, creating new one...")
-
+ 
     sh = client.create(SHEET_NAME)
     sh.share(None, perm_type="anyone", role="reader")
     created = True
     print(f"  Created sheet: {sh.title} (ID: {sh.id})")
     print(f"  *** Set GOOGLE_SHEET_ID={sh.id} in your GitHub repo secrets ***")
-
+ 
     # Write to GITHUB_ENV if running in Actions
     github_env = os.environ.get("GITHUB_ENV")
     if github_env:
         with open(github_env, "a") as f:
             f.write(f"GOOGLE_SHEET_ID={sh.id}\n")
         print(f"  Written GOOGLE_SHEET_ID to GITHUB_ENV")
-
+ 
     return sh, created
-
-
+ 
+ 
 def ensure_worksheet(sh: gspread.Spreadsheet, created: bool) -> gspread.Worksheet:
     try:
         ws = sh.worksheet(WORKSHEET)
     except gspread.WorksheetNotFound:
         ws = sh.add_worksheet(WORKSHEET, rows=10000, cols=len(COLUMNS))
-
+ 
     # Write header if sheet is empty or newly created
     if created or ws.row_count == 0 or not ws.row_values(1):
         ws.clear()
@@ -455,18 +454,18 @@ def ensure_worksheet(sh: gspread.Spreadsheet, created: bool) -> gspread.Workshee
             }
         }]})
         print(f"  Header row written")
-
+ 
     return ws
-
-
+ 
+ 
 def load_existing_keys(ws: gspread.Worksheet) -> set[str]:
     try:
         keys = ws.col_values(1)
         return set(keys[1:])  # skip header
     except Exception:
         return set()
-
-
+ 
+ 
 def append_papers(ws: gspread.Worksheet, papers: list[dict], existing_keys: set[str]) -> int:
     new_rows = []
     for p in papers:
@@ -475,28 +474,28 @@ def append_papers(ws: gspread.Worksheet, papers: list[dict], existing_keys: set[
         row = [p.get(col, "") for col in COLUMNS]
         new_rows.append(row)
         existing_keys.add(p["key"])
-
+ 
     if new_rows:
         ws.append_rows(new_rows, value_input_option="RAW")
         print(f"  Appended {len(new_rows)} new rows")
     else:
         print(f"  No new papers to append")
-
+ 
     return len(new_rows)
-
-
+ 
+ 
 def write_sheet_id_to_docs(sheet_id: str) -> None:
     """Write the sheet ID to docs/sheet_id.txt for the dashboard to read."""
     docs_dir = Path(__file__).parent.parent / "docs"
     docs_dir.mkdir(exist_ok=True)
     (docs_dir / "sheet_id.txt").write_text(sheet_id)
-
-
-
+ 
+ 
+ 
 # ── GitHub Models classification ───────────────────────────────────────────────
-
+ 
 CLASSIFY_SYSTEM = """You are classifying genomics papers for The Human Mosaic newsletter.
-
+ 
 Sections:
 - "Cancer Evolution": tumor phylogenetics, subclonal dynamics, clonal selection, WGD, ecDNA, sarcoma, tumor heterogeneity
 - "Somatic Evolution": clonal hematopoiesis, somatic mosaicism, aging, non-cancer clonal expansions, developmental mosaicism
@@ -505,11 +504,11 @@ Sections:
 - "Plasticity & Epigenetics": cell state transitions, epigenetic reprogramming, lineage plasticity, dedifferentiation, EMT, chromatin remodeling
 - "Human Genetic Diversity": population genomics, GWAS, pangenome, polygenic risk, ancestry, admixture, rare variants
 - "Other": anything that doesn't clearly fit the above
-
+ 
 Return ONLY a JSON array — no prose, no fences. One object per paper:
 {"idx": number, "section": string, "tags": [2-5 specific biological terms from the abstract]}"""
-
-
+ 
+ 
 def classify_papers_github(papers: list[dict], token: str, batch_size: int = 25) -> list[dict]:
     """
     Classify paper sections and tags using GitHub Models (GPT-4o mini).
@@ -519,7 +518,7 @@ def classify_papers_github(papers: list[dict], token: str, batch_size: int = 25)
     if not token:
         print("  No GITHUB_TOKEN — skipping AI classification, using keyword fallback")
         return papers
-
+ 
     endpoint = "https://models.github.ai/inference/chat/completions"
     headers = {
         "Authorization": f"Bearer {token}",
@@ -527,10 +526,10 @@ def classify_papers_github(papers: list[dict], token: str, batch_size: int = 25)
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2026-03-10",
     }
-
+ 
     batches = [papers[i:i+batch_size] for i in range(0, len(papers), batch_size)]
     print(f"  Classifying {len(papers)} papers in {len(batches)} batch(es) via GitHub Models...")
-
+ 
     for b_idx, batch in enumerate(batches, 1):
         numbered = "\n\n".join(
             f"{j+1}. {p['title']}\n{(p.get('abstract') or '')[:400]}"
@@ -542,24 +541,40 @@ def classify_papers_github(papers: list[dict], token: str, batch_size: int = 25)
                 {"role": "system", "content": CLASSIFY_SYSTEM},
                 {"role": "user",   "content": f"Classify these {len(batch)} papers:\n\n{numbered}"},
             ],
-            "max_tokens": 2000,
+            "max_tokens": 4096,
             "temperature": 0,
         }).encode()
-
+ 
         try:
             req = urllib.request.Request(endpoint, data=body, headers=headers, method="POST")
             with urllib.request.urlopen(req, timeout=40) as resp:
                 result = json.loads(resp.read())
-
+ 
             raw = result["choices"][0]["message"]["content"]
-            match = re.search(r'\[\s*\S[\s\S]*?\]', raw)
+            match = re.search(r'\[[\s\S]*\]', raw)
             if not match:
                 print(f"  Batch {b_idx}: no JSON array found, skipping", file=sys.stderr)
                 continue
-
-            scored = json.loads(match.group(0))
+ 
+            json_str = match.group(0)
+            try:
+                scored = json.loads(json_str)
+            except json.JSONDecodeError:
+                cut = json_str.rfind("},")
+                if cut == -1:
+                    cut = json_str.rfind("}")
+                if cut > 0:
+                    try:
+                        scored = json.loads(json_str[:cut+1] + "]")
+                        print(f"  Batch {b_idx}: salvaged {len(scored)} entries from truncated JSON")
+                    except json.JSONDecodeError:
+                        print(f"  Batch {b_idx}: JSON unrecoverable, skipping", file=sys.stderr)
+                        continue
+                else:
+                    print(f"  Batch {b_idx}: JSON unrecoverable, skipping", file=sys.stderr)
+                    continue
             idx_map = {int(e["idx"]): e for e in scored if "idx" in e}
-
+ 
             updated = 0
             for j, p in enumerate(batch):
                 e = idx_map.get(j + 1)
@@ -567,45 +582,45 @@ def classify_papers_github(papers: list[dict], token: str, batch_size: int = 25)
                     p["section"] = e.get("section", p.get("section", "Other"))
                     p["tags"]    = ", ".join(e.get("tags", []))
                     updated += 1
-
+ 
             print(f"  Batch {b_idx}/{len(batches)}: classified {updated}/{len(batch)} papers")
-
+ 
         except urllib.error.HTTPError as e:
             body_text = e.read().decode()[:300]
             print(f"  Batch {b_idx}: HTTP {e.code} — {body_text}", file=sys.stderr)
         except Exception as e:
             print(f"  Batch {b_idx}: failed — {e}", file=sys.stderr)
-
+ 
         time.sleep(1)  # polite rate limiting
-
+ 
     return papers
-
-
+ 
+ 
 # ── Main ───────────────────────────────────────────────────────────────────────
-
+ 
 def main():
     print(f"\n{'='*60}")
     print(f"  The Human Mosaic — Daily Feed Update")
     print(f"  {datetime.now().strftime('%Y-%m-%d %H:%M UTC')}")
     print(f"{'='*60}\n")
-
+ 
     sheet_id = os.environ.get("GOOGLE_SHEET_ID", "").strip() or None
-
+ 
     # 1. Fetch papers
     print(f"1. Fetching RSS feeds (last {DAYS} days)...")
     papers = fetch_rss(DAYS)
-
+ 
     print(f"\n2. bioRxiv API fallback...")
     api_papers = fetch_biorxiv_api(DAYS)
-
+ 
     # Merge and deduplicate by key
     all_papers: dict[str, dict] = {}
     for p in papers + api_papers:
         if p["key"] not in all_papers:
             all_papers[p["key"]] = p
-
+ 
     print(f"\n   Total unique papers: {len(all_papers)}")
-
+ 
     # 2. Classify sections and tags via GitHub Models
     github_token = os.environ.get("GITHUB_TOKEN", "").strip()
     new_papers = list(all_papers.values())
@@ -614,7 +629,7 @@ def main():
         new_papers = classify_papers_github(new_papers, github_token)
     else:
         print("\n2. Skipping AI classification (no GITHUB_TOKEN)")
-
+ 
     # 3. Connect to Google Sheets
     print(f"\n3. Connecting to Google Sheets...")
     client = get_client()
@@ -622,20 +637,20 @@ def main():
     ws = ensure_worksheet(sh, created)
     existing_keys = load_existing_keys(ws)
     print(f"   {len(existing_keys)} existing rows in sheet")
-
+ 
     # 3. Append new papers
     print(f"\n4. Appending new papers...")
     n_new = append_papers(ws, new_papers, existing_keys)
-
+ 
     # 4. Write sheet ID for dashboard
     write_sheet_id_to_docs(sh.id)
-
+ 
     print(f"\n{'='*60}")
     print(f"  Done. {n_new} new papers added.")
     print(f"  Sheet: https://docs.google.com/spreadsheets/d/{sh.id}")
     print(f"  CSV:   https://docs.google.com/spreadsheets/d/{sh.id}/export?format=csv")
     print(f"{'='*60}\n")
-
-
+ 
+ 
 if __name__ == "__main__":
     main()
