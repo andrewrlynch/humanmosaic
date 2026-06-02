@@ -29,21 +29,22 @@
     --accent: #7ba7e8;
   }
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; }
-
 .site-wrap { max-width: 1440px; margin: 0 auto; }
 
+/* ── Header ── */
 header { border-bottom: 0.5px solid var(--border); padding: 20px 24px 16px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; }
 .logo { font-size: 20px; font-weight: 500; letter-spacing: -.02em; }
 .logo em { font-style: italic; color: var(--accent); }
 .updated { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-left: auto; }
 
+/* ── Stats ── */
 .stats-bar { display: flex; gap: 6px; padding: 12px 24px; flex-wrap: wrap; border-bottom: 0.5px solid var(--border); }
 .stat { background: var(--bg2); border-radius: 6px; padding: 4px 12px; font-size: 11px; color: var(--text2); }
 .stat strong { font-size: 15px; font-weight: 500; color: var(--text); margin-right: 4px; }
 
+/* ── Controls ── */
 .controls { display: flex; gap: 8px; padding: 12px 24px; flex-wrap: wrap; align-items: center; border-bottom: 0.5px solid var(--border); }
 .controls input, .controls select {
   background: var(--bg); border: 0.5px solid var(--border); color: var(--text);
@@ -53,7 +54,12 @@ header { border-bottom: 0.5px solid var(--border); padding: 20px 24px 16px; disp
 .controls input:focus, .controls select:focus { border-color: var(--accent); }
 .btn { background: var(--bg); border: 0.5px solid var(--border); color: var(--text2); border-radius: 6px; padding: 6px 12px; font-size: 12px; cursor: pointer; }
 .btn:hover { background: var(--bg2); color: var(--text); }
+.btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
+/* ── View toggle ── */
+.view-toggle { display: flex; gap: 4px; margin-left: auto; }
+
+/* ── Table view ── */
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 thead th {
@@ -65,27 +71,13 @@ thead th {
 thead th:hover { color: var(--text); }
 thead th.sort-asc::after  { content: " ↑"; color: var(--accent); }
 thead th.sort-desc::after { content: " ↓"; color: var(--accent); }
-
 tbody tr.data-row td { padding: 8px 16px; border-bottom: 0.5px solid var(--border); vertical-align: top; }
-tbody tr.data-row:hover td { background: var(--bg2); cursor: pointer; }
+tbody tr.data-row { cursor: pointer; }
+tbody tr.data-row:hover td { background: var(--bg2); }
 tbody tr.data-row.expanded td { background: var(--bg2); }
-
-/* Abstract expand row */
-tbody tr.abstract-row td {
-  padding: 0;
-  border-bottom: 0.5px solid var(--border);
-  background: var(--bg2);
-}
-.abstract-inner {
-  padding: 10px 16px 14px 32px;
-  font-size: 12px;
-  color: var(--text2);
-  line-height: 1.6;
-  max-width: 860px;
-  display: none;
-}
+tbody tr.abstract-row td { padding: 0; border-bottom: 0.5px solid var(--border); background: var(--bg2); }
+.abstract-inner { padding: 10px 16px 14px 32px; font-size: 12px; color: var(--text2); line-height: 1.6; max-width: 860px; display: none; }
 tbody tr.abstract-row.open .abstract-inner { display: block; }
-
 td.title { max-width: 380px; }
 td.title a { color: var(--text); text-decoration: none; font-weight: 500; line-height: 1.4; }
 td.title a:hover { color: var(--accent); text-decoration: underline; }
@@ -93,25 +85,56 @@ td.muted { color: var(--text2); font-size: 11px; white-space: nowrap; }
 .chevron { font-size: 10px; color: var(--text3); margin-right: 6px; display: inline-block; transition: transform .15s; }
 .expanded .chevron { transform: rotate(90deg); }
 
+/* ── Masonry tile view ── */
+#tile-view { display: none; padding: 16px 24px; }
+#tile-view.visible { display: block; }
+.masonry {
+  columns: 4 280px;
+  column-gap: 12px;
+}
+.tile {
+  break-inside: avoid;
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: border-color .15s;
+  display: inline-block;
+  width: 100%;
+}
+.tile:hover { border-color: var(--accent); }
+.tile.open { border-color: var(--accent); }
+.tile-title { font-size: 13px; font-weight: 500; line-height: 1.4; margin-bottom: 6px; }
+.tile-title a { color: var(--text); text-decoration: none; }
+.tile-title a:hover { color: var(--accent); text-decoration: underline; }
+.tile-meta { font-size: 11px; color: var(--text2); margin-bottom: 8px; line-height: 1.5; }
+.tile-badges { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 8px; }
+.tile-abstract { font-size: 11px; color: var(--text2); line-height: 1.6; margin-top: 10px; padding-top: 10px; border-top: 0.5px solid var(--border); display: none; }
+.tile.open .tile-abstract { display: block; }
+.tile-chevron { font-size: 9px; color: var(--text3); float: right; margin-top: 2px; transition: transform .15s; }
+.tile.open .tile-chevron { transform: rotate(90deg); }
+
+/* ── Badges ── */
 .badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 500; white-space: nowrap; margin: 1px; }
 .b-preprint { background: #EEEDFE; color: #3C3489; }
 .b-journal  { background: #E1F5EE; color: #085041; }
 .b-new      { background: #FCEBEB; color: #791F1F; }
 .b-sec      { background: var(--bg2); color: var(--text2); border: 0.5px solid var(--border); }
-
-
 @media (prefers-color-scheme: dark) {
   .b-preprint { background: #26215C; color: #AFA9EC; }
   .b-journal  { background: #04342C; color: #5DCAA5; }
   .b-new      { background: #501313; color: #F09595; }
 }
-.loading { padding: 3rem; text-align: center; color: var(--text2); font-size: 13px; }
 
+/* ── Misc ── */
+.empty   { padding: 3rem; text-align: center; color: var(--text3); font-size: 13px; }
+.loading { padding: 3rem; text-align: center; color: var(--text2); font-size: 13px; }
 .pagination { display: flex; align-items: center; gap: 8px; padding: 12px 24px; border-top: 0.5px solid var(--border); font-size: 12px; color: var(--text2); }
 .pagination button { background: var(--bg2); border: 0.5px solid var(--border); color: var(--text); border-radius: 4px; padding: 4px 10px; cursor: pointer; font-size: 12px; }
 .pagination button:disabled { opacity: .4; cursor: default; }
 .page-info { margin: 0 auto; }
-
 footer { padding: 16px 24px; font-size: 11px; color: var(--text3); font-family: var(--mono); border-top: 0.5px solid var(--border); }
 footer a { color: var(--text3); }
 </style>
@@ -140,24 +163,44 @@ footer a { color: var(--text3); }
     <option value="30">Last 30 days</option>
     <option value="0">All time</option>
   </select>
+  <select id="fSort" onchange="sortFromSelect()">
+    <option value="date:-1">Date (newest)</option>
+    <option value="date:1">Date (oldest)</option>
+    <option value="title:1">Title A→Z</option>
+    <option value="title:-1">Title Z→A</option>
+    <option value="source:1">Source A→Z</option>
+    <option value="section:1">Section A→Z</option>
+  </select>
   <button class="btn" onclick="loadData()">↺ Refresh</button>
+  <div class="view-toggle">
+    <button class="btn active" id="btn-table" onclick="setView('table')" title="Table view">☰</button>
+    <button class="btn" id="btn-tile"  onclick="setView('tile')"  title="Tile view">⊞</button>
+  </div>
 </div>
 
-<div class="table-wrap">
-  <table>
-    <thead>
-      <tr>
-        <th onclick="sortBy('title')"  data-col="title">Title</th>
-        <th onclick="sortBy('source')" data-col="source">Source</th>
-        <th onclick="sortBy('section')" data-col="section">Section</th>
-        <th onclick="sortBy('date')"   data-col="date">Date</th>
-        <th>Tags</th>
-      </tr>
-    </thead>
-    <tbody id="tbody">
-      <tr><td colspan="5" class="loading">Loading papers…</td></tr>
-    </tbody>
-  </table>
+<!-- Table view -->
+<div id="table-view">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th onclick="sortBy('title')"   data-col="title">Title</th>
+          <th onclick="sortBy('source')"  data-col="source">Source</th>
+          <th onclick="sortBy('section')" data-col="section">Section</th>
+          <th onclick="sortBy('date')"    data-col="date">Date</th>
+          <th>Tags</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="5" class="loading">Loading papers…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Tile view -->
+<div id="tile-view">
+  <div class="masonry" id="masonry"></div>
 </div>
 
 <div class="pagination">
@@ -174,7 +217,7 @@ footer a { color: var(--text3); }
 </div>
 <script>
 const PAGE_SIZE = 50;
-let allData = [], filtered = [], sortCol = "date", sortDir = -1, page = 0;
+let allData = [], filtered = [], sortCol = "date", sortDir = -1, page = 0, currentView = "table";
 
 async function getSheetId() {
   try { const r = await fetch("sheet_id.txt"); if (r.ok) return (await r.text()).trim(); } catch {}
@@ -182,7 +225,10 @@ async function getSheetId() {
 }
 
 async function loadData() {
-  document.getElementById("tbody").innerHTML = '<tr><td colspan="5" class="loading">Fetching papers…</td></tr>';
+  const loadMsg = '<tr><td colspan="5" class="loading">Fetching papers…</td></tr>';
+  document.getElementById("tbody").innerHTML = loadMsg;
+  document.getElementById("masonry").innerHTML = '<div class="loading">Fetching papers…</div>';
+
   const sheetId = await getSheetId();
   if (!sheetId) {
     document.getElementById("tbody").innerHTML = '<tr><td colspan="5" class="empty">No sheet_id.txt found.</td></tr>';
@@ -204,12 +250,12 @@ async function loadData() {
     });
   } catch (e) {
     document.getElementById("tbody").innerHTML = `<tr><td colspan="5" class="empty">Failed to load: ${e.message}</td></tr>`;
+    document.getElementById("masonry").innerHTML = `<div class="empty">Failed to load: ${e.message}</div>`;
   }
 }
 
 function populateSectionFilter(data) {
-  const sel = document.getElementById("fSection");
-  const cur = sel.value;
+  const sel = document.getElementById("fSection"), cur = sel.value;
   const secs = [...new Set(data.map(d => d.section || "Other"))].sort();
   sel.innerHTML = '<option value="">All sections</option>';
   secs.forEach(s => { const o = document.createElement("option"); o.value = s; o.textContent = s; if (s === cur) o.selected = true; sel.appendChild(o); });
@@ -230,20 +276,21 @@ function applyFilters() {
     return true;
   });
 
-  // Sort — compare strings case-insensitively, dates as Date objects
   filtered.sort((a, b) => {
-    let av = (a[sortCol] || "").toString();
-    let bv = (b[sortCol] || "").toString();
+    let av = (a[sortCol] || "").toString(), bv = (b[sortCol] || "").toString();
     if (sortCol === "date") {
       const da = new Date(av), db = new Date(bv);
-      const an = isNaN(da), bn = isNaN(db);
-      if (an && bn) return 0;
-      if (an) return 1;
-      if (bn) return -1;
+      if (isNaN(da) && isNaN(db)) return 0;
+      if (isNaN(da)) return 1; if (isNaN(db)) return -1;
       return sortDir * (da - db);
     }
     return sortDir * av.toLowerCase().localeCompare(bv.toLowerCase());
   });
+
+  // Sync sort dropdown
+  const sel = document.getElementById("fSort");
+  const target = `${sortCol}:${sortDir}`;
+  for (const opt of sel.options) { if (opt.value === target) { sel.value = target; break; } }
 
   page = 0;
   renderStats();
@@ -261,63 +308,99 @@ function renderStats() {
      <div class="stat"><strong>${secs}</strong> sections</div>`;
 }
 
-function toggleAbstract(rowId) {
-  const dataRow = document.getElementById("row-" + rowId);
-  const absRow  = document.getElementById("abs-" + rowId);
-  if (!dataRow || !absRow) return;
-  const isOpen = absRow.classList.contains("open");
-  dataRow.classList.toggle("expanded", !isOpen);
-  absRow.classList.toggle("open", !isOpen);
+function escHtml(s) { return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function badgesHtml(p, maxTags) {
+  const btype = p.type === "preprint" ? "b-preprint" : "b-journal";
+  const tags  = (p.tags || "").split(",").filter(Boolean).slice(0, maxTags)
+                  .map(t => `<span class="badge b-sec">${escHtml(t.trim())}</span>`).join("");
+  return `<span class="badge ${btype}">${escHtml(p.source||"")}</span>
+          <span class="badge b-sec">${escHtml((p.section||"Other").replace(/&/g,"&amp;"))}</span>
+          ${tags}`;
+}
+
+function toggleAbstract(id) {
+  if (currentView === "table") {
+    const dr = document.getElementById("row-"+id), ar = document.getElementById("abs-"+id);
+    if (!dr || !ar) return;
+    const open = ar.classList.contains("open");
+    dr.classList.toggle("expanded", !open); ar.classList.toggle("open", !open);
+  } else {
+    const tile = document.getElementById("tile-"+id);
+    if (tile) tile.classList.toggle("open");
+  }
 }
 
 function renderPage() {
-  const start = page * PAGE_SIZE;
-  const slice = filtered.slice(start, start + PAGE_SIZE);
-  const now   = Date.now();
+  const start = page * PAGE_SIZE, slice = filtered.slice(start, start + PAGE_SIZE), now = Date.now();
+  const total = Math.ceil(filtered.length / PAGE_SIZE);
 
-  if (!slice.length) {
-    document.getElementById("tbody").innerHTML = '<tr><td colspan="5" class="empty">No papers match</td></tr>';
+  if (currentView === "table") {
+    if (!slice.length) {
+      document.getElementById("tbody").innerHTML = '<tr><td colspan="5" class="empty">No papers match</td></tr>';
+    } else {
+      document.getElementById("tbody").innerHTML = slice.map((p, i) => {
+        const id = start + i;
+        const link    = p.url || (p.doi ? `https://doi.org/${p.doi}` : "#");
+        const fetched = new Date(p.fetched_at || "");
+        const isNew   = !isNaN(fetched) && (now - fetched) < 86400000;
+        const dateStr = p.date ? new Date(p.date).toLocaleDateString("en-US", {month:"short",day:"numeric",year:"numeric"}) : "";
+        const btype   = p.type === "preprint" ? "b-preprint" : "b-journal";
+        const section = escHtml((p.section||"Other").replace(/&/g,"&amp;"));
+        const tags    = (p.tags||"").split(",").filter(Boolean).slice(0,4).map(t=>`<span class="badge b-sec">${escHtml(t.trim())}</span>`).join(" ");
+        const abs     = escHtml(p.abstract||"");
+        const hasAbs  = abs.length > 0;
+        return `<tr class="data-row" id="row-${id}" onclick="${hasAbs?`toggleAbstract(${id})`:''}">
+          <td class="title">
+            <span class="chevron">${hasAbs?"▶":""}</span>${isNew?'<span class="badge b-new">new</span> ':''}
+            <a href="${escHtml(link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escHtml(p.title||"")}</a>
+            <div style="font-size:11px;color:var(--text2);margin-top:3px">${escHtml(p.authors||"")}</div>
+          </td>
+          <td class="muted"><span class="badge ${btype}">${escHtml(p.source||"")}</span></td>
+          <td class="muted"><span class="badge b-sec">${section}</span></td>
+          <td class="muted">${dateStr}</td>
+          <td>${tags}</td>
+        </tr>
+        <tr class="abstract-row" id="abs-${id}">
+          <td colspan="5"><div class="abstract-inner">${abs}</div></td>
+        </tr>`;
+      }).join("");
+    }
+
+    // Sort indicators
+    document.querySelectorAll("thead th[data-col]").forEach(th => {
+      th.classList.remove("sort-asc","sort-desc");
+      if (th.dataset.col === sortCol) th.classList.add(sortDir===1?"sort-asc":"sort-desc");
+    });
+
   } else {
-    const rows = slice.map((p, i) => {
-      const id     = start + i;
-      const link   = p.url || (p.doi ? `https://doi.org/${p.doi}` : "#");
-      const btype  = p.type === "preprint" ? "b-preprint" : "b-journal";
-      const tags   = (p.tags || "").split(",").slice(0, 4).map(t => `<span class="badge b-sec">${t.trim()}</span>`).join(" ");
-      const fetched = new Date(p.fetched_at || "");
-      const isNew  = !isNaN(fetched) && (now - fetched) < 86400000;
-      const dateStr = p.date ? new Date(p.date).toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"}) : "";
-      const section = (p.section || "Other").replace(/&/g, "&amp;");
-      const abstract = (p.abstract || "").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-      const hasAbs = abstract.length > 0;
-
-      return `<tr class="data-row" id="row-${id}" onclick="${hasAbs ? `toggleAbstract(${id})` : ''}">
-        <td class="title">
-          <span class="chevron">${hasAbs ? "▶" : ""}</span>${isNew ? '<span class="badge b-new">new</span> ' : ''}
-          <a href="${link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${p.title || ""}</a>
-          <div style="font-size:11px;color:var(--text2);margin-top:3px">${p.authors || ""}</div>
-        </td>
-        <td class="muted"><span class="badge ${btype}">${p.source || ""}</span></td>
-        <td class="muted"><span class="badge b-sec">${section}</span></td>
-        <td class="muted">${dateStr}</td>
-        <td>${tags}</td>
-      </tr>
-      <tr class="abstract-row" id="abs-${id}">
-        <td colspan="5"><div class="abstract-inner">${abstract}</div></td>
-      </tr>`;
-    }).join("");
-    document.getElementById("tbody").innerHTML = rows;
+    // Tile view
+    if (!slice.length) {
+      document.getElementById("masonry").innerHTML = '<div class="empty">No papers match</div>';
+    } else {
+      document.getElementById("masonry").innerHTML = slice.map((p, i) => {
+        const id      = start + i;
+        const link    = p.url || (p.doi ? `https://doi.org/${p.doi}` : "#");
+        const fetched = new Date(p.fetched_at || "");
+        const isNew   = !isNaN(fetched) && (now - fetched) < 86400000;
+        const dateStr = p.date ? new Date(p.date).toLocaleDateString("en-US", {month:"short",day:"numeric",year:"numeric"}) : "";
+        const abs     = escHtml(p.abstract||"");
+        const hasAbs  = abs.length > 0;
+        return `<div class="tile" id="tile-${id}" onclick="${hasAbs?`toggleAbstract(${id})`:''}">
+          ${hasAbs?'<span class="tile-chevron">▶</span>':''}
+          ${isNew?'<span class="badge b-new" style="float:right;margin-left:4px">new</span>':''}
+          <div class="tile-title"><a href="${escHtml(link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escHtml(p.title||"")}</a></div>
+          <div class="tile-meta">${escHtml(p.authors||"")}${p.authors&&dateStr?" · ":""}${dateStr}</div>
+          <div class="tile-badges">${badgesHtml(p, 3)}</div>
+          ${hasAbs?`<div class="tile-abstract">${abs}</div>`:""}
+        </div>`;
+      }).join("");
+    }
   }
 
-  const total = Math.ceil(filtered.length / PAGE_SIZE);
-  document.getElementById("page-info").textContent = `Page ${page + 1} of ${total || 1}  (${filtered.length} papers)`;
+  document.getElementById("page-info").textContent = `Page ${page+1} of ${total||1}  (${filtered.length} papers)`;
   document.getElementById("prev").disabled = page === 0;
   document.getElementById("next").disabled = page >= total - 1;
-
-  // Sort indicators
-  document.querySelectorAll("thead th[data-col]").forEach(th => {
-    th.classList.remove("sort-asc", "sort-desc");
-    if (th.dataset.col === sortCol) th.classList.add(sortDir === 1 ? "sort-asc" : "sort-desc");
-  });
 }
 
 function sortBy(col) {
@@ -327,11 +410,27 @@ function sortBy(col) {
   applyFilters();
 }
 
+function sortFromSelect() {
+  const [col, dir] = document.getElementById("fSort").value.split(":");
+  sortCol = col; sortDir = parseInt(dir);
+  page = 0;
+  applyFilters();
+}
+
 function changePage(d) {
   const total = Math.ceil(filtered.length / PAGE_SIZE);
   page = Math.max(0, Math.min(page + d, total - 1));
   renderPage();
   window.scrollTo(0, 0);
+}
+
+function setView(v) {
+  currentView = v;
+  document.getElementById("table-view").style.display = v === "table" ? "" : "none";
+  document.getElementById("tile-view").classList.toggle("visible", v === "tile");
+  document.getElementById("btn-table").classList.toggle("active", v === "table");
+  document.getElementById("btn-tile").classList.toggle("active", v === "tile");
+  renderPage();
 }
 
 loadData();

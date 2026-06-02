@@ -28,7 +28,7 @@ jobs:
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
-          DAYS: "2"
+          DAYS: "14"
         run: python scripts/fetch_and_update.py
 
       - name: Commit updated sheet_id.txt if changed
