@@ -17,7 +17,8 @@
   --accent: #2a5298;
   --mono:   "SFMono-Regular","Consolas",monospace;
 }
-@media (prefers-color-scheme: dark) {
+
+<@media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
     --bg:     #111110;
@@ -29,6 +30,7 @@
     --accent: #7ba7e8;
   }
 }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; }
 .site-wrap { max-width: 1440px; margin: 0 auto; }
@@ -143,7 +145,7 @@ footer a { color: var(--text3); }
 <div class="site-wrap">
 
 <header>
-  <span class="logo">The Human Mosaic</span>
+  <span class="logo">The Human <em>Mosaic</em></span>
   <span class="updated" id="updated">Loading…</span>
 </header>
 
@@ -314,9 +316,10 @@ function badgesHtml(p, maxTags) {
   const btype = p.type === "preprint" ? "b-preprint" : "b-journal";
   const tags  = (p.tags || "").split(",").filter(Boolean).slice(0, maxTags)
                   .map(t => `<span class="badge b-sec">${escHtml(t.trim())}</span>`).join("");
+  const score = p.score ? `<span class="badge b-sec">${p.score}/10</span>` : "";
   return `<span class="badge ${btype}">${escHtml(p.source||"")}</span>
           <span class="badge b-sec">${escHtml((p.section||"Other").replace(/&/g,"&amp;"))}</span>
-          ${tags}`;
+          ${score}${tags}`;
 }
 
 function toggleAbstract(id) {
@@ -348,6 +351,7 @@ function renderPage() {
         const btype   = p.type === "preprint" ? "b-preprint" : "b-journal";
         const section = escHtml((p.section||"Other").replace(/&/g,"&amp;"));
         const tags    = (p.tags||"").split(",").filter(Boolean).slice(0,4).map(t=>`<span class="badge b-sec">${escHtml(t.trim())}</span>`).join(" ");
+        const score   = p.score ? `<span class="badge b-sec">${p.score}/10</span> ` : "";
         const abs     = escHtml(p.abstract||"");
         const hasAbs  = abs.length > 0;
         return `<tr class="data-row" id="row-${id}" onclick="${hasAbs?`toggleAbstract(${id})`:''}">
@@ -359,7 +363,7 @@ function renderPage() {
           <td class="muted"><span class="badge ${btype}">${escHtml(p.source||"")}</span></td>
           <td class="muted"><span class="badge b-sec">${section}</span></td>
           <td class="muted">${dateStr}</td>
-          <td>${tags}</td>
+          <td>${score}${tags}</td>
         </tr>
         <tr class="abstract-row" id="abs-${id}">
           <td colspan="5"><div class="abstract-inner">${abs}</div></td>

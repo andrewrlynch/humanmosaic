@@ -53,7 +53,7 @@ SCOPES = [
 
 COLUMNS = [
     "key", "title", "authors", "source", "date", "doi", "url",
-    "type", "section", "tags", "abstract", "fetched_at",
+    "type", "section", "tags", "score", "abstract", "fetched_at",
 ]
 
 # ── Feeds ──────────────────────────────────────────────────────────────────────
@@ -191,6 +191,13 @@ TIER2 = [
     "sarcoma", "lung cancer", "breast cancer", "PDAC", "pancreatic cancer", "colorectal cancer", "glioblastoma", "leukemia", "lymphoma", "melanoma", "prostate cancer", "ovarian cancer", "bladder cancer", "esophageal cancer", "gastric cancer", "liver cancer", "hepatocellular carcinoma", "cancer of unknown primary", "CUP", "metastatic cancer", "advanced cancer", "therapy-resistant cancer"
 ]
 
+# Terms that frequently cause false positives — never count toward the threshold
+BLOCKLIST = [
+    "arabidopsis", "drosophila", "saccharomyces", "caenorhabditis",
+    "zebrafish", "xenopus", "maize", "wheat", "rice",
+    "yeast two-hybrid", "plant pathogen",
+]
+ 
 SECTIONS = [
     ("Cancer Evolution",     ["tumor evolution","cancer evolution","clonal evolution","subclonal","tumor heterogeneity","ecDNA","whole genome doubling"]),
     ("Somatic Evolution",    ["somatic evolution","somatic mosaicism","clonal hematopoiesis","aging","non-cancer clonal"]),
@@ -199,7 +206,7 @@ SECTIONS = [
     ("Plasticity & Epigenetics", ["phenotypic plasticity","epigenetic","cell state","dedifferentiation","lineage plasticity","EMT","transdifferentiation"]),
     ("Human Diversity",      ["population genomics","gwas","pangenome","polygenic risk","ancestry","admixture","rare variant"]),
 ]
-
+ 
 # ── Utilities ──────────────────────────────────────────────────────────────────
  
 def strip_html(text: str) -> str:
@@ -248,9 +255,21 @@ def parse_date(entry) -> datetime | None:
  
  
 def keyword_passes(text: str) -> bool:
+    """
+    Pass if: >=1 Tier 1 keyword OR >=2 Tier 2 keywords.
+    Reject if blocklist term present AND no Tier 1 hit
+    (avoids model organism papers that happen to mention genomics methods).
+    """
     t = text.lower()
+ 
+    # Tier 1 always passes regardless of blocklist
     if any(k.lower() in t for k in TIER1):
         return True
+ 
+    # Reject if blocklist term present — these are model organism / off-topic papers
+    if any(b.lower() in t for b in BLOCKLIST):
+        return False
+ 
     return sum(1 for k in TIER2 if k.lower() in t) >= 2
  
  
@@ -265,7 +284,7 @@ def classify_section(text: str) -> str:
 def extract_tags(text: str) -> str:
     t = text.lower()
     all_kw = TIER1 + TIER2
-    hits = [k for k in all_kw if k.lower() in t]
+    hits = [k for k in all_kw if k.lower() in t and k not in BLOCKLIST]
     unique = list(dict.fromkeys(hits))
     return ", ".join(unique[:5])
  
@@ -494,19 +513,31 @@ def write_sheet_id_to_docs(sheet_id: str) -> None:
  
 # ── GitHub Models classification ───────────────────────────────────────────────
  
-CLASSIFY_SYSTEM = """You are classifying genomics papers for The Human Mosaic newsletter.
+MIN_SCORE = int(os.environ.get("MIN_SCORE", "3"))
  
-Sections:
-- "Cancer Evolution": tumor phylogenetics, subclonal dynamics, clonal selection, WGD, ecDNA, sarcoma, tumor heterogeneity
+CLASSIFY_SYSTEM = """You are a genomics expert scoring and classifying papers for The Human Mosaic newsletter.
+ 
+CRITICAL INSTRUCTIONS:
+- You will receive N papers. Return exactly N entries — one per paper, no exceptions.
+- Do NOT omit any paper. Score every paper, even if score is 0.
+ 
+Score each paper 0-10 for relevance:
+- 8-10: Core topic (tumor evolution, genetic instability, chromosomal instability, clonal evolution, aneuploidy, phenotypic plasticity, lineage fate, ecDNA, chromothripsis, tumor timing, subclonal dynamics, clonal hematopoiesis, somatic mosaicism, mutational signatures)
+- 5-7: Related (cancer genomics methods, aging, wound healing, dysplasia, pre-cancer, tumor microenvironment)
+- 2-4: Adjacent (general cancer biology with genomic or somatic component, population genetics with somatic angle, clinical studies with genomic analysis)
+- 0-1: Irrelevant (evolutionary studies in non-human models with no human application, pure methods papers with no biological insight)
+ 
+Assign each paper exactly one section:
+- "Cancer Evolution": tumor phylogenetics, subclonal dynamics, clonal selection, WGD, ecDNA, sarcoma, cancer cell fraction, tumor heterogeneity
 - "Somatic Evolution": clonal hematopoiesis, somatic mosaicism, aging, non-cancer clonal expansions, developmental mosaicism
 - "Genome Instability": CIN, structural variation, chromothripsis, BFB, replication stress, DNA damage, aneuploidy, rearrangements
-- "Mutational Processes": mutational signatures, APOBEC, MMR, HRD, mutagenic exposures, repair pathways
-- "Plasticity & Epigenetics": cell state transitions, epigenetic reprogramming, lineage plasticity, dedifferentiation, EMT, chromatin remodeling
-- "Human Genetic Diversity": population genomics, GWAS, pangenome, polygenic risk, ancestry, admixture, rare variants
+- "Mutational Processes": mutational signatures, APOBEC, MMR, HRD, mutagenic exposures, base editing, repair pathways
+- "Phenotypic Plasticity and Epigenetic Dysregulation": cell state plasticity, phenotype switching, EMT, stromal remodeling, neural remodeling, tumor microenvironment, cell identity, fate determination, lineage plasticity, reprogramming, transdifferentiation
+- "Human Genetic Diversity and Health": GWAS, genome-wide association, PheWAS, UK Biobank, population genomics, germline structural variation, pangenome, polygenic risk, ancestry, admixture, rare variant association, complex trait genetics
 - "Other": anything that doesn't clearly fit the above
  
 Return ONLY a JSON array — no prose, no fences. One object per paper:
-{"idx": number, "section": string, "tags": [2-5 specific biological terms from the abstract]}"""
+{"idx": number, "score": number, "section": string, "tags": [2-5 specific biological terms from the abstract]}"""
  
  
 def classify_papers_github(papers: list[dict], token: str, batch_size: int = 25) -> list[dict]:
@@ -581,6 +612,7 @@ def classify_papers_github(papers: list[dict], token: str, batch_size: int = 25)
                 if e:
                     p["section"] = e.get("section", p.get("section", "Other"))
                     p["tags"]    = ", ".join(e.get("tags", []))
+                    p["score"]   = int(e.get("score", 0))
                     updated += 1
  
             print(f"  Batch {b_idx}/{len(batches)}: classified {updated}/{len(batch)} papers")
@@ -638,7 +670,13 @@ def main():
     existing_keys = load_existing_keys(ws)
     print(f"   {len(existing_keys)} existing rows in sheet")
  
-    # 3. Append new papers
+    # 3. Filter by score if classification ran
+    if github_token:
+        before = len(new_papers)
+        new_papers = [p for p in new_papers if p.get("score", 10) >= MIN_SCORE]
+        print(f"  Score filter (>={MIN_SCORE}): {len(new_papers)}/{before} papers kept")
+ 
+    # 4. Append new papers
     print(f"\n4. Appending new papers...")
     n_new = append_papers(ws, new_papers, existing_keys)
  
