@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
-      contents: write       # needed to push docs/ changes
+      contents: write
+      models: read
 
     steps:
       - name: Checkout
@@ -26,6 +27,7 @@ jobs:
 
       - name: Fetch feeds and update sheet
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
           DAYS: "14"
