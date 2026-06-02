@@ -174,11 +174,11 @@ TIER2 = [
     # ITH terms
     "tumor heterogeneity", "intratumor heterogeneity", 
     # Mitosis and chromosomal instability terms
-    "abnormal mitosis", "mitotic fidelity", "chromosome missegregation", "micronucleus", "lagging chromosome", "anaphase bridge", "centrosome amplification", "spindle assembly checkpoint", "cytokinesis failure", "replication stress", "DNA damage", "genome instability", "telomere dysfunction", "telomere catastrophe", "whole genome doubling", "WGD", 
+    "abnormal mitosis", "mitotic fidelity", "chromosome missegregation", "chromosome mis-segregation", "micronucleus", "lagging chromosome", "anaphase bridge", "centrosome amplification", "spindle assembly checkpoint", "cytokinesis failure", "replication stress", "DNA damage", "genome instability", "telomere dysfunction", "telomere catastrophe", "whole genome doubling", "WGD", 
     # Methods terms
     "cancer genome", "whole genome sequencing", "wgs", "single-cell sequencing", "scRNA-seq", "spatial transcriptomics", "ATAC-seq", "ChIP-seq", "lineage tracing", "barcoding", "phylogenetics",
     # Simple variant terms
-    "copy number", "copy number variation", "copy number alteration", "CNA", "aneuploidy", "amplification", "structural variation", "structural variant", "SV", "genomic deletion", "inversion", "translocation", "rearrangement",
+    "copy number", "copy number variation", "copy number alteration", "aneuploidy", "amplification", "structural variation", "structural variant", "genomic deletion", "genomic inversion", "genomic translocation", "genomic rearrangement", "chromosomal deletion", "chromosomal inversion", "chromosomal translocation", "chromosomal rearrangement",
     # Complex variant or cluster mutagenesis terms
     "ecDNA", "extrachromosomal", "double minute", "chromothripsis", "chromoplexy", "kataegis", "BFB", "breakage-fusion-bridge", "breakage fusion bridge",
     # Evolution terms
