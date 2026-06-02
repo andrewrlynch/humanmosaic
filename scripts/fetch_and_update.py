@@ -363,7 +363,7 @@ def fetch_rss(days: int) -> list[dict]:
                     "type":       feed_type,
                     "section":    classify_section(combined),
                     "tags":       extract_tags(combined),
-                    "abstract":   abstract[:600],
+                    "abstract":   abstract,
                     "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
                 })
                 count += 1
@@ -394,7 +394,7 @@ def fetch_biorxiv_api(days: int) -> list[dict]:
                     continue
                 seen.add(doi)
                 title    = p.get("title", "")
-                abstract = p.get("abstract", "")[:600]
+                abstract = p.get("abstract", "")
                 combined = title + " " + abstract
                 if not keyword_passes(combined):
                     continue
