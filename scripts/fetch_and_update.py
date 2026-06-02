@@ -59,60 +59,137 @@ COLUMNS = [
 # ── Feeds ──────────────────────────────────────────────────────────────────────
 
 RSS_FEEDS = [
-    ("bioRxiv Cancer Biology",    "https://connect.biorxiv.org/biorxiv_xml.php?subject=cancer_biology",      "preprint"),
-    ("bioRxiv Genomics",          "https://connect.biorxiv.org/biorxiv_xml.php?subject=genomics",             "preprint"),
-    ("bioRxiv Evolutionary Bio",  "https://connect.biorxiv.org/biorxiv_xml.php?subject=evolutionary_biology", "preprint"),
-    ("medRxiv Oncology",          "https://connect.medrxiv.org/medrxiv_xml.php?subject=oncology",             "preprint"),
-    ("medRxiv Pathology",         "https://connect.medrxiv.org/medrxiv_xml.php?subject=pathology",            "preprint"),
-    ("arXiv q-bio.GN",            "https://arxiv.org/rss/q-bio.GN",                                           "preprint"),
-    ("arXiv q-bio.PE",            "https://arxiv.org/rss/q-bio.PE",                                           "preprint"),
-    ("arXiv q-bio.QM",            "https://arxiv.org/rss/q-bio.QM",                                           "preprint"),
-    ("arXiv q-bio.CB",            "https://arxiv.org/rss/q-bio.CB",                                           "preprint"),
+    # Preprint servers
+    ("bioRxiv Cancer Biology",              "https://connect.biorxiv.org/biorxiv_xml.php?subject=cancer_biology",         "preprint"),
+    ("bioRxiv Genomics",                    "https://connect.biorxiv.org/biorxiv_xml.php?subject=genomics",               "preprint"),
+    ("bioRxiv Evolutionary Bio",            "https://connect.biorxiv.org/biorxiv_xml.php?subject=evolutionary_biology",   "preprint"),
+    ("medRxiv Oncology",                    "https://connect.medrxiv.org/medrxiv_xml.php?subject=oncology",               "preprint"),
+    ("medRxiv Pathology",                   "https://connect.medrxiv.org/medrxiv_xml.php?subject=pathology",              "preprint"),
+    ("arXiv q-bio.GN",                      "https://arxiv.org/rss/q-bio.GN",                                             "preprint"),
+    ("arXiv q-bio.PE",                      "https://arxiv.org/rss/q-bio.PE",                                             "preprint"),
+    ("arXiv q-bio.QM",                      "https://arxiv.org/rss/q-bio.QM",                                             "preprint"),
+    ("arXiv q-bio.CB",                      "https://arxiv.org/rss/q-bio.CB",                                             "preprint"),
+    ("arXiv cs.LG",                         "https://arxiv.org/rss/cs.LG",                                                "preprint"),
+    ("eLife",                               "https://elifesciences.org/rss/recent.xml",                                   "preprint"), 
+
+    # CSHL Press
+    ("Genome Research",                     "https://genome.cshlp.org/rss/current.xml",                                   "journal"),
+    ("Genes & Development",                 "https://genesdev.cshlp.org/rss/current.xml",                                 "journal"),
+    ("Cold Spring Harb Perspect Biol",      "https://cshperspectives.cshlp.org/rss/current.xml",                          "journal"),
+
+    # BMJ
+    ("Gut",                                 "https://gut.bmj.com/rss/current.xml",                                        "journal"),
+    ("BMJ Clinical Genetics & Genomics",    "https://jmg.bmj.com/rss/current.xml",                                        "journal"),
+    ("BMJ Medical Genetics",                "https://gim.bmjjournals.com/rss/current.xml",                                "journal"),
+    ("BMJ Clinical Pathology",              "https://jcp.bmj.com/rss/current.xml",                                        "journal"),
+ 
+    # AACR
+    ("Cancer Discovery",                    "https://aacrjournals.org/rss/site_1000003/1000004.xml",                      "journal"),
+    ("Cancer Research",                     "https://aacrjournals.org/rss/site_1000011/1000008.xml",                      "journal"),
+    ("Clinical Cancer Research",            "https://aacrjournals.org/rss/site_1000013/1000009.xml",                      "journal"),
+    ("Cancer Prevention Research",          "https://aacrjournals.org/rss/site_1000009/1000007.xml",                      "journal"),
+    ("Molecular Cancer Research",           "https://aacrjournals.org/rss/site_1000015/1000010.xml",                      "journal"),
+ 
+    # Cell Press
+    ("Cell",                                "https://www.cell.com/cell/inpress.rss",                                      "journal"),
+    ("Cancer Cell",                         "https://www.cell.com/cancer-cell/inpress.rss",                               "journal"),
+    ("Cell Genomics",                       "https://www.cell.com/cell-genomics/inpress.rss",                             "journal"),
+    ("Cell Cycle",                          "https://www.tandfonline.com/feed/rss/kccy20",  "journal"),
+    ("Molecular Cell",                      "https://www.cell.com/molecular-cell/inpress.rss",                            "journal"),
+    ("Cell Reports",                        "https://www.cell.com/cell-reports/inpress.rss",                              "journal"),
+    ("Cell Reports Medicine",               "https://www.cell.com/cell-reports-medicine/inpress.rss",                     "journal"),
+    ("Developmental Cell",                  "https://www.cell.com/developmental-cell/inpress.rss",                        "journal"),
+    ("American Journal of Human Genetics",  "https://www.cell.com/ajhg/inpress.rss",                                      "journal"),
+    ("iScience",                            "https://www.cell.com/iscience/inpress.rss",                                  "journal"),
+    ("Current Opinion in Genetics",         "https://www.cell.com/current-opinion-genetics-development/inpress.rss",      "journal"),
+    ("Trends in Genetics",                  "https://www.cell.com/trends/genetics/inpress.rss",                           "journal"),
+    ("Trends in Cancer",                    "https://www.cell.com/trends/cancer/inpress.rss",                             "journal"),
+    ("Trends in Cell Biology",              "https://www.cell.com/trends/cell-biology/inpress.rss",                       "journal"),
+ 
+    # Nature portfolio
     ("Nature",                    "https://www.nature.com/nature.rss",                                         "journal"),
     ("Nature Genetics",           "https://www.nature.com/ng.rss",                                             "journal"),
     ("Nature Cancer",             "https://www.nature.com/natcancer.rss",                                      "journal"),
+    ("Nature Methods",            "https://www.nature.com/nmeth.rss",                                          "journal"),
     ("Nature Communications",     "https://www.nature.com/ncomms.rss",                                         "journal"),
     ("Nature Ecology & Evolution","https://www.nature.com/natecolevol.rss",                                    "journal"),
     ("Nature Medicine",           "https://www.nature.com/nm.rss",                                             "journal"),
-    ("Science",                   "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science",     "journal"),
-    ("Science Translational Med", "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=stm",        "journal"),
-    ("Cell",                      "https://www.cell.com/cell/inpress.rss",                                     "journal"),
-    ("Cancer Cell",               "https://www.cell.com/cancer-cell/inpress.rss",                              "journal"),
-    ("Cell Genomics",             "https://www.cell.com/cell-genomics/inpress.rss",                            "journal"),
-    ("Molecular Cell",            "https://www.cell.com/molecular-cell/inpress.rss",                           "journal"),
-    ("Cancer Discovery",          "https://aacrjournals.org/rss/site_1000003/1000004.xml",                     "journal"),
-    ("Cancer Research",           "https://aacrjournals.org/rss/site_1000011/1000008.xml",                     "journal"),
-    ("Genome Research",           "https://genome.cshlp.org/rss/current.xml",                                  "journal"),
-    ("Genome Biology",            "https://genomebiology.biomedcentral.com/articles/most-recent/rss.xml",      "journal"),
-    ("eLife",                     "https://elifesciences.org/rss/recent.xml",                                   "journal"),
-    ("Trends in Genetics",        "https://www.cell.com/trends/genetics/inpress.rss",                          "journal"),
-    ("Trends in Cancer",          "https://www.cell.com/trends/cancer/inpress.rss",                            "journal"),
+    ("Nature Reviews Cancer",     "https://www.nature.com/nrc.rss",                                            "journal"),
+    ("Nature Reviews Genetics",   "https://www.nature.com/nrg.rss",                                            "journal"),
+    ("Blood Cancer Journal",      "https://www.nature.com/bcj.rss",                                            "journal"),
+    ("Leukemia",                  "https://www.nature.com/leu.rss",                                            "journal"),
+    ("Oncogene",                  "https://www.nature.com/onc.rss",                                            "journal"),
+    ("Scientific Reports",        "https://www.nature.com/srep.rss",                                            "journal"),
+    ("Nature Reviews Molecular Cell Bio", "https://www.nature.com/nrm.rss",       "journal"),
+    ("Nature Reviews Disease Primers", "https://www.nature.com/nrdp.rss",         "journal"),
+
+    # Annual Reviews
+    ("Annual Review of Genetics",      "https://www.annualreviews.org/rss/content/journals/genet/latestarticles", "journal"),
+    ("Annual Review of Genomics",      "https://www.annualreviews.org/rss/content/journals/genom/latestarticles", "journal"),
+    ("Annual Review of Cancer Biology","https://www.annualreviews.org/rss/content/journals/cancerbio/latestarticles", "journal"),
+    ("Annual Review of Cell Dev Biol", "https://www.annualreviews.org/rss/content/journals/cellbio/latestarticles", "journal"),
+    ("Annual Review of Medicine",      "https://www.annualreviews.org/rss/content/journals/med/latestarticles",   "journal"),
+
+ 
+    # Oxford
+    ("Bioinformatics",            "https://academic.oup.com/rss/site_5127/advanceAccess_3122.xml",             "journal"),
+    ("Briefings in Bioinformatics","https://academic.oup.com/rss/site_5374/advanceAccess_3707.xml",            "journal"),
+    ("Nucleic Acids Research",    "https://academic.oup.com/rss/site_5127/advanceAccess_3120.xml",             "journal"),
+ 
+    # PLOS
+    ("PLOS Biology",              "https://journals.plos.org/plosbiology/feed/atom",                           "journal"),
+    ("PLOS Computational Biology","https://journals.plos.org/ploscompbiol/feed/atom",                          "journal"),
     ("PLOS Genetics",             "https://journals.plos.org/plosgenetics/feed/atom",                          "journal"),
+ 
+    # NEJM / Lancet
     ("NEJM",                      "https://www.nejm.org/action/showFeed?jc=nejm&type=etoc&feed=rss",           "journal"),
     ("Lancet Oncology",           "https://www.thelancet.com/rssfeed/lanonc_current.xml",                      "journal"),
-]
+    ("Lancet",                    "https://www.thelancet.com/rssfeed/lancet_current.xml",                       "journal"),
+ 
+    # Science journals (AAAS)
+    ("Science",                   "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science",     "journal"),
+    ("Science Translational Medicine", "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=stm",    "journal"),
+    ("Science Advances",          "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciadv",      "journal"),
+    ("Science Immunology",        "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciimmunol",  "journal"),
+    ("Science Signaling",         "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=scisignal",   "journal"),
+ 
+    # ASCB
+    ("Molecular Biology of the Cell", "https://www.molbiolcell.org/action/showFeed?type=etoc&feed=rss&jc=mboc", "journal"),
+
+    # Other
+    ("Seminars in Cancer Biology",     "https://rss.sciencedirect.com/publication/science/10462804",            "journal"),
+    ("Genome Biology",            "https://genomebiology.biomedcentral.com/articles/most-recent/rss.xml",      "journal"),
+    ("Journal of Cell Biology",            "https://rupress.org/rss/site_1000001/1000003.xml",                 "journal")
+ ]
 
 # ── Keywords ───────────────────────────────────────────────────────────────────
 
-TIER1 = [
-    "tumor evolution", "cancer evolution", "somatic evolution", "clonal evolution",
-    "subclonal evolution", "cancer progression", "field cancerization",
-    "chromosomal instability", "genomic instability", "genetic instability",
-    "phenotypic plasticity", "phenotype plasticity", "therapeutic resistance",
-    "somatic mosaicism", "clonal hematopoiesis",
+TIER1_KEYWORDS = [
+    "tumor evolution", "cancer evolution", "somatic evolution", "clonal evolution", "subclonal evolution", "cancer progression", "field cancerization",
+    "chromosomal instability", "genomic instability", "genetic instability", "phenotype plasticity", "phenotypic plasticity", "therapeutic resistance", "somatic mosaicism", "clonal hematopoiesis"
 ]
 
-TIER2 = [
-    "somatic mutation", "mutational signature", "whole genome doubling",
-    "copy number", "ecDNA", "extrachromosomal", "chromothripsis", "chromoplexy",
-    "breakage fusion bridge", "structural variation", "aneuploidy",
-    "tumor heterogeneity", "subclonal", "clonal dynamics",
-    "cancer genome", "whole genome sequencing", "single-cell sequencing",
-    "lineage tracing", "cancer phylogeny", "replication stress", "DNA damage",
-    "telomere", "APOBEC", "HRD", "mismatch repair", "kataegis",
-    "epigenetic", "cell state", "dedifferentiation", "lineage plasticity",
-    "population genomics", "gwas", "pangenome", "polygenic risk",
-    "sarcoma", "leukemia", "glioblastoma", "lymphoma",
+TIER2_KEYWORDS = [
+    # Mutation terms
+    "somatic mutation", "mutational signature", "mutation signature", "somatic hypermutation", "APOBEC", "MMR", "mismatch repair", "HRD", "homologous recombination deficiency", "mutagenic exposure", "base editing", "DNA repair pathway",
+    # ITH terms
+    "tumor heterogeneity", "intratumor heterogeneity", 
+    # Mitosis and chromosomal instability terms
+    "abnormal mitosis", "mitotic fidelity", "chromosome missegregation", "micronucleus", "lagging chromosome", "anaphase bridge", "centrosome amplification", "spindle assembly checkpoint", "cytokinesis failure", "replication stress", "DNA damage", "genome instability", "telomere dysfunction", "telomere catastrophe", "whole genome doubling", "WGD", 
+    # Methods terms
+    "cancer genome", "whole genome sequencing", "wgs", "single-cell sequencing", "scRNA-seq", "spatial transcriptomics", "ATAC-seq", "ChIP-seq", "lineage tracing", "barcoding", "phylogenetics", "computational modeling", "machine learning", "deep learning", "clustering", "dimensionality reduction",
+    # Simple variant terms
+    "copy number", "copy number variation", "copy number alteration", "CNA", "aneuploidy", "amplification", "structural variation", "structural variant", "SV", "genomic deletion", "inversion", "translocation", "rearrangement",
+    # Complex variant or cluster mutagenesis terms
+    "ecDNA", "extrachromosomal", "double minute", "chromothripsis", "chromoplexy", "kataegis", "BFB", "breakage-fusion-bridge", "breakage fusion bridge",
+    # Evolution terms
+    "cancer phylogeny", "tumor phylogenetics", "phylogenomics", "timing", "ccf", "cancer cell fraction", "clonal dynamics", "subclonal dynamics", "evolutionary trajectory", "evolutionary trajectories",
+    # Human genetic diversity
+    "population genomics", "human genetic diversity", "pangenome", "polygenic risk", "ancestry", "admixture", "rare variant", "germline structural variation", "gwas", "genome-wide association",
+    # Plasticity terms
+    "reprogramming", "transdifferentiation", "cell state", "stromal remodeling", "tumor microenvironment", "cancer-associated fibroblast", "neural remodeling", "perineural", "axonogenesis", "neuroendocrine", "epithelial-mesenchymal transition", "EMT", "neuroplasticity", "cell identity", "fate determination", "lineage plasticity", "differentiation", "de-differentiation", "dedifferentiation", "wound healing",
+    # Specific cancer terms
+    "sarcoma", "lung cancer", "breast cancer", "PDAC", "pancreatic cancer", "colorectal cancer", "glioblastoma", "leukemia", "lymphoma", "melanoma", "prostate cancer", "ovarian cancer", "bladder cancer", "esophageal cancer", "gastric cancer", "liver cancer", "hepatocellular carcinoma", "cancer of unknown primary", "CUP", "metastatic cancer", "advanced cancer", "therapy-resistant cancer"
 ]
 
 SECTIONS = [
