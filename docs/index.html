@@ -17,8 +17,7 @@
   --accent: #2a5298;
   --mono:   "SFMono-Regular","Consolas",monospace;
 }
-
-<@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
     --bg:     #111110;
@@ -30,7 +29,6 @@
     --accent: #7ba7e8;
   }
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; }
 .site-wrap { max-width: 1440px; margin: 0 auto; }
@@ -145,7 +143,7 @@ footer a { color: var(--text3); }
 <div class="site-wrap">
 
 <header>
-  <span class="logo">The Human <em>Mosaic</em></span>
+  <span class="logo">The Human Mosaic</span>
   <span class="updated" id="updated">Loading…</span>
 </header>
 
@@ -168,6 +166,8 @@ footer a { color: var(--text3); }
   <select id="fSort" onchange="sortFromSelect()">
     <option value="date:-1">Date (newest)</option>
     <option value="date:1">Date (oldest)</option>
+    <option value="score:-1">Score (highest)</option>
+    <option value="score:1">Score (lowest)</option>
     <option value="title:1">Title A→Z</option>
     <option value="title:-1">Title Z→A</option>
     <option value="source:1">Source A→Z</option>
@@ -190,6 +190,7 @@ footer a { color: var(--text3); }
           <th onclick="sortBy('source')"  data-col="source">Source</th>
           <th onclick="sortBy('section')" data-col="section">Section</th>
           <th onclick="sortBy('date')"    data-col="date">Date</th>
+          <th onclick="sortBy('score')"   data-col="score">Score</th>
           <th>Tags</th>
         </tr>
       </thead>
@@ -286,6 +287,10 @@ function applyFilters() {
       if (isNaN(da)) return 1; if (isNaN(db)) return -1;
       return sortDir * (da - db);
     }
+    if (sortCol === "score") {
+      const na = parseFloat(av) || 0, nb = parseFloat(bv) || 0;
+      return sortDir * (na - nb);
+    }
     return sortDir * av.toLowerCase().localeCompare(bv.toLowerCase());
   });
 
@@ -316,10 +321,9 @@ function badgesHtml(p, maxTags) {
   const btype = p.type === "preprint" ? "b-preprint" : "b-journal";
   const tags  = (p.tags || "").split(",").filter(Boolean).slice(0, maxTags)
                   .map(t => `<span class="badge b-sec">${escHtml(t.trim())}</span>`).join("");
-  const score = p.score ? `<span class="badge b-sec">${p.score}/10</span>` : "";
   return `<span class="badge ${btype}">${escHtml(p.source||"")}</span>
           <span class="badge b-sec">${escHtml((p.section||"Other").replace(/&/g,"&amp;"))}</span>
-          ${score}${tags}`;
+          ${tags}`;
 }
 
 function toggleAbstract(id) {
@@ -351,7 +355,8 @@ function renderPage() {
         const btype   = p.type === "preprint" ? "b-preprint" : "b-journal";
         const section = escHtml((p.section||"Other").replace(/&/g,"&amp;"));
         const tags    = (p.tags||"").split(",").filter(Boolean).slice(0,4).map(t=>`<span class="badge b-sec">${escHtml(t.trim())}</span>`).join(" ");
-        const score   = p.score ? `<span class="badge b-sec">${p.score}/10</span> ` : "";
+        const scoreNum = p.score !== undefined && p.score !== "" ? parseInt(p.score) : null;
+        const scoreBadge = scoreNum !== null ? `<span class="badge b-sec" style="font-variant-numeric:tabular-nums">${scoreNum}/10</span>` : "";
         const abs     = escHtml(p.abstract||"");
         const hasAbs  = abs.length > 0;
         return `<tr class="data-row" id="row-${id}" onclick="${hasAbs?`toggleAbstract(${id})`:''}">
@@ -363,7 +368,8 @@ function renderPage() {
           <td class="muted"><span class="badge ${btype}">${escHtml(p.source||"")}</span></td>
           <td class="muted"><span class="badge b-sec">${section}</span></td>
           <td class="muted">${dateStr}</td>
-          <td>${score}${tags}</td>
+          <td style="white-space:nowrap">${scoreBadge}</td>
+          <td>${tags}</td>
         </tr>
         <tr class="abstract-row" id="abs-${id}">
           <td colspan="5"><div class="abstract-inner">${abs}</div></td>
@@ -395,7 +401,7 @@ function renderPage() {
           ${isNew?'<span class="badge b-new" style="float:right;margin-left:4px">new</span>':''}
           <div class="tile-title"><a href="${escHtml(link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escHtml(p.title||"")}</a></div>
           <div class="tile-meta">${escHtml(p.authors||"")}${p.authors&&dateStr?" · ":""}${dateStr}</div>
-          <div class="tile-badges">${badgesHtml(p, 3)}</div>
+          <div class="tile-badges">${badgesHtml(p, 3)}${p.score ? `<span class="badge b-sec">${parseInt(p.score)}/10</span>` : ""}</div>
           ${hasAbs?`<div class="tile-abstract">${abs}</div>`:""}
         </div>`;
       }).join("");
