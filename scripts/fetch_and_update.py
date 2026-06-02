@@ -172,7 +172,7 @@ TIER2 = [
     # Mutation terms
     "somatic mutation", "mutational signature", "mutation signature", "somatic hypermutation", "APOBEC", "MMR", "mismatch repair", "HRD", "homologous recombination deficiency", "mutagenic exposure", "base editing", "DNA repair pathway",
     # ITH terms
-    "tumor heterogeneity", "intratumor heterogeneity", 
+    "tumor heterogeneity", "intratumor heterogeneity", "cellular heterogeneity",
     # Mitosis and chromosomal instability terms
     "abnormal mitosis", "mitotic fidelity", "chromosome missegregation", "chromosome mis-segregation", "micronucleus", "lagging chromosome", "anaphase bridge", "centrosome amplification", "spindle assembly checkpoint", "cytokinesis failure", "replication stress", "DNA damage", "genome instability", "telomere dysfunction", "telomere catastrophe", "whole genome doubling", "WGD", 
     # Methods terms
@@ -188,7 +188,7 @@ TIER2 = [
     # Plasticity terms
     "reprogramming", "transdifferentiation", "cell state", "stromal remodeling", "tumor microenvironment", "cancer-associated fibroblast", "neural remodeling", "perineural", "axonogenesis", "neuroendocrine", "epithelial-mesenchymal transition", "EMT", "neuroplasticity", "cell identity", "fate determination", "lineage plasticity", "differentiation", "de-differentiation", "dedifferentiation", "wound healing",
     # Specific cancer terms
-    "sarcoma", "lung cancer", "breast cancer", "PDAC", "pancreatic cancer", "colorectal cancer", "glioblastoma", "leukemia", "lymphoma", "melanoma", "prostate cancer", "ovarian cancer", "bladder cancer", "esophageal cancer", "gastric cancer", "liver cancer", "hepatocellular carcinoma", "cancer of unknown primary", "CUP", "metastatic cancer", "advanced cancer", "therapy-resistant cancer"
+    "sarcoma", "leiomyosarcoma", "osteosarcoma", "carcinoma", "adenoma", "adenocarcinoma", "lung cancer", "breast cancer", "PDAC", "pancreatic cancer", "colorectal cancer", "glioblastoma", "leukemia", "lymphoma", "melanoma", "prostate cancer", "ovarian cancer", "bladder cancer", "esophageal cancer", "gastric cancer", "liver cancer", "hepatocellular carcinoma", "cancer of unknown primary", "CUP", "metastatic cancer", "advanced cancer", "therapy-resistant cancer"
 ]
 
 # Terms that frequently cause false positives — never count toward the threshold
