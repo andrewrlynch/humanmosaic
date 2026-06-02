@@ -1,0 +1,40 @@
+name: Daily Feed Update
+
+on:
+  schedule:
+    - cron: "0 8 * * *"   # 8:00 UTC daily (3am CT)
+  workflow_dispatch:        # Manual trigger from GitHub UI
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write       # needed to push docs/ changes
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests feedparser gspread google-auth
+
+      - name: Fetch feeds and update sheet
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          DAYS: "2"
+        run: python scripts/fetch_and_update.py
+
+      - name: Commit updated sheet_id.txt if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/sheet_id.txt
+          git diff --cached --quiet || git commit -m "chore: update sheet_id [skip ci]"
+          git push

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Human Mosaic — Paper Feed</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+:root {
+  --bg:       #fafaf8;
+  --bg2:      #f2f0eb;
+  --border:   rgba(0,0,0,.1);
+  --text:     #1a1a18;
+  --text2:    #6b6b65;
+  --text3:    #9b9b95;
+  --accent:   #2a5298;
+  --mono:     "SFMono-Regular", "Consolas", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:     #111110;
+    --bg2:    #1c1c1a;
+    --border: rgba(255,255,255,.1);
+    --text:   #e8e4dc;
+    --text2:  #888880;
+    --text3:  #555550;
+    --accent: #7ba7e8;
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; }
+
+header { border-bottom: 0.5px solid var(--border); padding: 20px 24px 16px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; }
+.logo { font-size: 20px; font-weight: 500; letter-spacing: -.02em; }
+.logo em { font-style: italic; color: var(--accent); }
+.updated { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-left: auto; }
+
+.stats-bar { display: flex; gap: 6px; padding: 12px 24px; flex-wrap: wrap; border-bottom: 0.5px solid var(--border); }
+.stat { background: var(--bg2); border-radius: 6px; padding: 4px 12px; font-size: 11px; color: var(--text2); }
+.stat strong { font-size: 15px; font-weight: 500; color: var(--text); margin-right: 4px; }
+
+.controls { display: flex; gap: 8px; padding: 12px 24px; flex-wrap: wrap; align-items: center; border-bottom: 0.5px solid var(--border); }
+.controls input, .controls select {
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  outline: none;
+}
+.controls input { flex: 1; min-width: 180px; }
+.controls input:focus, .controls select:focus { border-color: var(--accent); }
+.btn {
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  color: var(--text2);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.btn:hover { background: var(--bg2); color: var(--text); }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+thead th {
+  text-align: left;
+  padding: 8px 16px;
+  background: var(--bg2);
+  border-bottom: 0.5px solid var(--border);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text2);
+  position: sticky;
+  top: 0;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+thead th:hover { color: var(--text); }
+thead th.sorted-asc::after  { content: " ↑"; color: var(--accent); }
+thead th.sorted-desc::after { content: " ↓"; color: var(--accent); }
+tbody td { padding: 8px 16px; border-bottom: 0.5px solid var(--border); vertical-align: top; }
+tbody tr:hover td { background: var(--bg2); }
+tbody tr:last-child td { border-bottom: none; }
+
+td.title { max-width: 340px; }
+td.title a { color: var(--text); text-decoration: none; font-weight: 500; line-height: 1.4; }
+td.title a:hover { color: var(--accent); text-decoration: underline; }
+td.muted { color: var(--text2); font-size: 11px; white-space: nowrap; }
+td.abstract { max-width: 320px; color: var(--text2); font-size: 11px; line-height: 1.5; }
+
+.badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 500; white-space: nowrap; margin: 1px; }
+.b-preprint { background: #EEEDFE; color: #3C3489; }
+.b-journal  { background: #E1F5EE; color: #085041; }
+.b-new      { background: #FCEBEB; color: #791F1F; }
+.b-sec      { background: var(--bg2); color: var(--text2); border: 0.5px solid var(--border); }
+@media (prefers-color-scheme: dark) {
+  .b-preprint { background: #26215C; color: #AFA9EC; }
+  .b-journal  { background: #04342C; color: #5DCAA5; }
+  .b-new      { background: #501313; color: #F09595; }
+}
+
+.empty { padding: 3rem; text-align: center; color: var(--text3); font-size: 13px; }
+.loading { padding: 3rem; text-align: center; color: var(--text2); font-size: 13px; }
+
+.pagination { display: flex; align-items: center; gap: 8px; padding: 12px 24px; border-top: 0.5px solid var(--border); font-size: 12px; color: var(--text2); }
+.pagination button { background: var(--bg2); border: 0.5px solid var(--border); color: var(--text); border-radius: 4px; padding: 4px 10px; cursor: pointer; font-size: 12px; }
+.pagination button:disabled { opacity: .4; cursor: default; }
+.page-info { margin: 0 auto; }
+
+footer { padding: 16px 24px; font-size: 11px; color: var(--text3); font-family: var(--mono); border-top: 0.5px solid var(--border); }
+footer a { color: var(--text3); }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">The Human Mosaic</span>
+  <span class="updated" id="updated">Loading…</span>
+</header>
+
+<div class="stats-bar" id="stats"></div>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="Search title, author, abstract…" oninput="applyFilters()">
+  <select id="fSection" onchange="applyFilters()"><option value="">All sections</option></select>
+  <select id="fType" onchange="applyFilters()">
+    <option value="">All types</option>
+    <option value="journal">Journal</option>
+    <option value="preprint">Preprint</option>
+  </select>
+  <select id="fDays" onchange="applyFilters()">
+    <option value="7">Last 7 days</option>
+    <option value="14">Last 14 days</option>
+    <option value="30">Last 30 days</option>
+    <option value="0">All time</option>
+  </select>
+  <button class="btn" onclick="loadData()" title="Refresh">↺ Refresh</button>
+</div>
+
+<div class="table-wrap">
+  <table id="table">
+    <thead>
+      <tr>
+        <th onclick="sortBy('title')">Title</th>
+        <th onclick="sortBy('source')">Source</th>
+        <th onclick="sortBy('section')">Section</th>
+        <th onclick="sortBy('date')">Date</th>
+        <th>Tags</th>
+        <th>Abstract</th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
+      <tr><td colspan="6" class="loading">Loading papers…</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination">
+  <button id="prev" onclick="changePage(-1)" disabled>← Prev</button>
+  <span class="page-info" id="page-info"></span>
+  <button id="next" onclick="changePage(1)">Next →</button>
+</div>
+
+<footer>
+  Data updated daily via GitHub Actions · 
+  <a href="https://github.com" id="repo-link" target="_blank">Source</a> · 
+  <a href="#" id="sheet-link" target="_blank">Google Sheet</a>
+</footer>
+
+<script>
+const PAGE_SIZE = 50;
+let allData = [], filtered = [], sortCol = "date", sortDir = -1, page = 0;
+
+async function getSheetId() {
+  try {
+    const r = await fetch("sheet_id.txt");
+    if (r.ok) return (await r.text()).trim();
+  } catch {}
+  return null;
+}
+
+async function loadData() {
+  document.getElementById("tbody").innerHTML = '<tr><td colspan="6" class="loading">Fetching papers…</td></tr>';
+
+  const sheetId = await getSheetId();
+  if (!sheetId) {
+    document.getElementById("tbody").innerHTML = '<tr><td colspan="6" class="empty">No sheet_id.txt found. Run the GitHub Action to create the sheet.</td></tr>';
+    return;
+  }
+
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=0`;
+  document.getElementById("sheet-link").href =
+    `https://docs.google.com/spreadsheets/d/${sheetId}`;
+
+  try {
+    const r = await fetch(csvUrl);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const text = await r.text();
+
+    Papa.parse(text, {
+      header: true,
+      skipEmptyLines: true,
+      complete: ({ data }) => {
+        allData = data;
+        populateSectionFilter(data);
+        document.getElementById("updated").textContent =
+          `${data.length} papers · updated ${new Date().toLocaleTimeString()}`;
+        applyFilters();
+      }
+    });
+  } catch (e) {
+    document.getElementById("tbody").innerHTML =
+      `<tr><td colspan="6" class="empty">Failed to load: ${e.message}</td></tr>`;
+  }
+}
+
+function populateSectionFilter(data) {
+  const sel = document.getElementById("fSection");
+  const current = sel.value;
+  const secs = [...new Set(data.map(d => d.section || "Other"))].sort();
+  sel.innerHTML = '<option value="">All sections</option>';
+  secs.forEach(s => {
+    const o = document.createElement("option");
+    o.value = s; o.textContent = s;
+    if (s === current) o.selected = true;
+    sel.appendChild(o);
+  });
+}
+
+function applyFilters() {
+  const q   = document.getElementById("search").value.toLowerCase();
+  const fs  = document.getElementById("fSection").value;
+  const ft  = document.getElementById("fType").value;
+  const fd  = parseInt(document.getElementById("fDays").value);
+  const cutoff = fd ? new Date(Date.now() - fd * 86400000) : null;
+
+  filtered = allData.filter(p => {
+    if (cutoff) {
+      const d = new Date(p.date || p.fetched_at || "");
+      if (!isNaN(d) && d < cutoff) return false;
+    }
+    if (fs && (p.section || "Other") !== fs) return false;
+    if (ft && p.type !== ft) return false;
+    if (q) {
+      const hay = ((p.title || "") + (p.authors || "") + (p.abstract || "") + (p.source || "")).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  filtered.sort((a, b) => {
+    let av = a[sortCol] || "", bv = b[sortCol] || "";
+    if (sortCol === "date") { av = new Date(av); bv = new Date(bv); }
+    return av < bv ? -sortDir : av > bv ? sortDir : 0;
+  });
+
+  page = 0;
+  renderStats();
+  renderPage();
+}
+
+function renderStats() {
+  const j = filtered.filter(p => p.type === "journal").length;
+  const pr = filtered.filter(p => p.type === "preprint").length;
+  const secs = new Set(filtered.map(p => p.section || "Other")).size;
+  document.getElementById("stats").innerHTML =
+    `<div class="stat"><strong>${filtered.length}</strong> papers</div>
+     <div class="stat"><strong>${j}</strong> journal</div>
+     <div class="stat"><strong>${pr}</strong> preprint</div>
+     <div class="stat"><strong>${secs}</strong> sections</div>`;
+}
+
+function renderPage() {
+  const start = page * PAGE_SIZE;
+  const slice = filtered.slice(start, start + PAGE_SIZE);
+  const now = Date.now();
+
+  if (!slice.length) {
+    document.getElementById("tbody").innerHTML =
+      '<tr><td colspan="6" class="empty">No papers match your filters</td></tr>';
+  } else {
+    const rows = slice.map(p => {
+      const link  = p.url || (p.doi ? `https://doi.org/${p.doi}` : "#");
+      const type  = p.type === "preprint" ? "b-preprint" : "b-journal";
+      const tags  = (p.tags || "").split(",").slice(0, 3).map(t =>
+        `<span class="badge b-sec">${t.trim()}</span>`).join(" ");
+      const fetched = new Date(p.fetched_at || "");
+      const isNew = !isNaN(fetched) && (now - fetched) < 86400000;
+      const dateStr = p.date ? new Date(p.date).toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"}) : "";
+      const section = (p.section || "Other").replace(" & ", " &amp; ").replace("and","&amp;");
+      return `<tr>
+        <td class="title">
+          ${isNew ? '<span class="badge b-new">new</span> ' : ''}
+          <a href="${link}" target="_blank" rel="noopener">${p.title || ""}</a>
+          <div style="font-size:11px;color:var(--text2);margin-top:3px">${p.authors || ""}</div>
+        </td>
+        <td class="muted"><span class="badge ${type}">${p.source || ""}</span></td>
+        <td class="muted"><span class="badge b-sec">${section}</span></td>
+        <td class="muted">${dateStr}</td>
+        <td>${tags}</td>
+        <td class="abstract">${(p.abstract || "").slice(0, 200)}${(p.abstract || "").length > 200 ? "…" : ""}</td>
+      </tr>`;
+    }).join("");
+    document.getElementById("tbody").innerHTML = rows;
+  }
+
+  const total = Math.ceil(filtered.length / PAGE_SIZE);
+  document.getElementById("page-info").textContent =
+    `Page ${page + 1} of ${total || 1}  (${filtered.length} papers)`;
+  document.getElementById("prev").disabled = page === 0;
+  document.getElementById("next").disabled = page >= total - 1;
+
+  // Update sort indicators
+  document.querySelectorAll("thead th").forEach(th => {
+    th.classList.remove("sorted-asc", "sorted-desc");
+  });
+  const cols = ["title","source","section","date","",""];
+  const idx = cols.indexOf(sortCol);
+  if (idx >= 0) {
+    const ths = document.querySelectorAll("thead th");
+    ths[idx].classList.add(sortDir === 1 ? "sorted-asc" : "sorted-desc");
+  }
+}
+
+function sortBy(col) {
+  if (sortCol === col) sortDir *= -1;
+  else { sortCol = col; sortDir = -1; }
+  page = 0;
+  renderPage();
+}
+
+function changePage(d) {
+  const total = Math.ceil(filtered.length / PAGE_SIZE);
+  page = Math.max(0, Math.min(page + d, total - 1));
+  renderPage();
+  window.scrollTo(0, 0);
+}
+
+loadData();
+</script>
+</body>
+</html>

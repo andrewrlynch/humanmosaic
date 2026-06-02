@@ -1,1 +1,1 @@
-# humanmosaic
+# The Human Mosaic Feed
