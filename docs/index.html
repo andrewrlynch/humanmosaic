@@ -136,12 +136,10 @@ footer a { color: var(--text3); }
 </header>
 
 <div class="about">
-  The Human Mosaic is a “This Week In”-style newsletter bringing you the cutting-edgiest research at the interface of human evolution and human health. Tracking how we change in our lifetime and, what those changes mean for our health, and how these changes ripple through populations and generations.
+  The Human Mosaic is a "This Week In"-style newsletter bringing you the cutting-edgiest research at the interface of human evolution and human health. Tracking how we change in our lifetime and, what those changes mean for our health, and how these changes ripple through populations and generations.
 </div>
 
-<div class="stats-bar" id="stats">
-  
-</div>
+<div class="stats-bar" id="stats"></div>
 
 <div class="controls">
   <input type="text" id="search" placeholder="Search title, author, abstract…" oninput="applyFilters()">
@@ -214,6 +212,7 @@ footer a { color: var(--text3); }
 <script>
 let PAGE_SIZE = 15;
 let allData = [], filtered = [], sortCol = "date", sortDir = -1, page = 0, currentView = "table";
+let SHEET_ID = "";
 
 async function getSheetId() {
   try { const r = await fetch("sheet_id.txt"); if (r.ok) return (await r.text()).trim(); } catch {}
@@ -228,9 +227,10 @@ async function loadData() {
     document.getElementById("tbody").innerHTML = '<tr><td colspan="6" class="empty">No sheet_id.txt found.</td></tr>';
     return;
   }
-  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=46876741`;
-  document.getElementById("sheet-link").href = `https://docs.google.com/spreadsheets/d/${sheetId}`;
-  document.getElementById("footer-sheet-link").href = `https://docs.google.com/spreadsheets/d/${sheetId}`;
+  SHEET_ID = sheetId;
+  const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}`;
+  const csvUrl   = `${sheetUrl}/export?format=csv&gid=46876741`;
+  document.getElementById("footer-sheet-link").href = sheetUrl;
   try {
     const r = await fetch(csvUrl);
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -296,14 +296,14 @@ function applyFilters() {
 function renderStats() {
   const j  = filtered.filter(p => p.type === "journal").length;
   const pr = filtered.filter(p => p.type === "preprint").length;
-  const sheetHref = document.getElementById("footer-sheet-link").href;
+  const sheetUrl = SHEET_ID ? `https://docs.google.com/spreadsheets/d/${SHEET_ID}` : "#";
   document.getElementById("stats").innerHTML =
     `<div class="stat"><strong>${filtered.length}</strong> papers</div>
      <div class="stat"><strong>${j}</strong> journal</div>
      <div class="stat"><strong>${pr}</strong> preprint</div>
      <div class="nav-links">
        <a href="about.html">About</a>
-       <a href="${sheetHref}" id="sheet-link" target="_blank">Google Sheet ↗</a>
+       <a href="${sheetUrl}" target="_blank">Google Sheet ↗</a>
      </div>`;
 }
 
