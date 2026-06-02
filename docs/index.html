@@ -39,13 +39,21 @@ header { border-bottom: 0.5px solid var(--border); padding: 20px 24px 16px; disp
 .logo em { font-style: italic; color: var(--accent); }
 .updated { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-left: auto; }
 
+/* ── About blurb ── */
+.about { padding: 14px 24px; border-bottom: 0.5px solid var(--border); font-size: 13px; color: var(--text2); line-height: 1.6; max-width: 860px; }
+.about a { color: var(--accent); text-decoration: none; }
+.about a:hover { text-decoration: underline; }
+
 /* ── Stats ── */
-.stats-bar { display: flex; gap: 6px; padding: 12px 24px; flex-wrap: wrap; border-bottom: 0.5px solid var(--border); }
+.stats-bar { display: flex; gap: 6px; padding: 10px 24px; flex-wrap: wrap; border-bottom: 0.5px solid var(--border); align-items: center; }
 .stat { background: var(--bg2); border-radius: 6px; padding: 4px 12px; font-size: 11px; color: var(--text2); }
 .stat strong { font-size: 15px; font-weight: 500; color: var(--text); margin-right: 4px; }
+.nav-links { margin-left: auto; display: flex; gap: 12px; font-size: 12px; }
+.nav-links a { color: var(--text3); text-decoration: none; }
+.nav-links a:hover { color: var(--accent); }
 
 /* ── Controls ── */
-.controls { display: flex; gap: 8px; padding: 12px 24px; flex-wrap: wrap; align-items: center; border-bottom: 0.5px solid var(--border); }
+.controls { display: flex; gap: 8px; padding: 10px 24px; flex-wrap: wrap; align-items: center; border-bottom: 0.5px solid var(--border); }
 .controls input, .controls select {
   background: var(--bg); border: 0.5px solid var(--border); color: var(--text);
   border-radius: 6px; padding: 6px 10px; font-size: 12px; outline: none;
@@ -55,15 +63,13 @@ header { border-bottom: 0.5px solid var(--border); padding: 20px 24px 16px; disp
 .btn { background: var(--bg); border: 0.5px solid var(--border); color: var(--text2); border-radius: 6px; padding: 6px 12px; font-size: 12px; cursor: pointer; }
 .btn:hover { background: var(--bg2); color: var(--text); }
 .btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-/* ── View toggle ── */
 .view-toggle { display: flex; gap: 4px; margin-left: auto; }
 
-/* ── Table view ── */
+/* ── Table ── */
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 thead th {
-  text-align: left; padding: 8px 16px; background: var(--bg2);
+  text-align: left; padding: 7px 12px; background: var(--bg2);
   border-bottom: 0.5px solid var(--border); font-size: 10px; font-weight: 500;
   text-transform: uppercase; letter-spacing: .06em; color: var(--text2);
   position: sticky; top: 0; white-space: nowrap; cursor: pointer; user-select: none;
@@ -71,50 +77,52 @@ thead th {
 thead th:hover { color: var(--text); }
 thead th.sort-asc::after  { content: " ↑"; color: var(--accent); }
 thead th.sort-desc::after { content: " ↓"; color: var(--accent); }
-tbody tr.data-row td { padding: 8px 16px; border-bottom: 0.5px solid var(--border); vertical-align: top; }
+tbody tr.data-row td { padding: 7px 12px; border-bottom: 0.5px solid var(--border); vertical-align: top; }
 tbody tr.data-row { cursor: pointer; }
 tbody tr.data-row:hover td { background: var(--bg2); }
 tbody tr.data-row.expanded td { background: var(--bg2); }
 tbody tr.abstract-row td { padding: 0; border-bottom: 0.5px solid var(--border); background: var(--bg2); }
-.abstract-inner { padding: 10px 16px 14px 32px; font-size: 12px; color: var(--text2); line-height: 1.6; max-width: 860px; display: none; }
+.abstract-inner { padding: 10px 12px 14px 28px; font-size: 12px; color: var(--text2); line-height: 1.6; max-width: 860px; display: none; }
 tbody tr.abstract-row.open .abstract-inner { display: block; }
-td.title { max-width: 380px; }
+td.title { max-width: 360px; }
 td.title a { color: var(--text); text-decoration: none; font-weight: 500; line-height: 1.4; }
 td.title a:hover { color: var(--accent); text-decoration: underline; }
 td.muted { color: var(--text2); font-size: 11px; white-space: nowrap; }
-.chevron { font-size: 10px; color: var(--text3); margin-right: 6px; display: inline-block; transition: transform .15s; }
+td.score-cell { white-space: nowrap; }
+.chevron { font-size: 10px; color: var(--text3); margin-right: 5px; display: inline-block; transition: transform .15s; }
 .expanded .chevron { transform: rotate(90deg); }
 
-/* ── Masonry tile view ── */
+/* ── Masonry ── */
 #tile-view { display: none; padding: 16px 24px; }
 #tile-view.visible { display: block; }
-.masonry {
-  columns: 4 280px;
-  column-gap: 12px;
-}
-.tile {
-  break-inside: avoid;
-  background: var(--bg);
-  border: 0.5px solid var(--border);
-  border-radius: 8px;
-  padding: 14px 16px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  transition: border-color .15s;
-  display: inline-block;
-  width: 100%;
-}
+.masonry { columns: 4 280px; column-gap: 12px; }
+.tile { break-inside: avoid; background: var(--bg); border: 0.5px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; cursor: pointer; transition: border-color .15s; display: inline-block; width: 100%; }
 .tile:hover { border-color: var(--accent); }
 .tile.open { border-color: var(--accent); }
 .tile-title { font-size: 13px; font-weight: 500; line-height: 1.4; margin-bottom: 6px; }
 .tile-title a { color: var(--text); text-decoration: none; }
 .tile-title a:hover { color: var(--accent); text-decoration: underline; }
 .tile-meta { font-size: 11px; color: var(--text2); margin-bottom: 8px; line-height: 1.5; }
-.tile-badges { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 8px; }
+.tile-badges { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 4px; }
 .tile-abstract { font-size: 11px; color: var(--text2); line-height: 1.6; margin-top: 10px; padding-top: 10px; border-top: 0.5px solid var(--border); display: none; }
 .tile.open .tile-abstract { display: block; }
 .tile-chevron { font-size: 9px; color: var(--text3); float: right; margin-top: 2px; transition: transform .15s; }
 .tile.open .tile-chevron { transform: rotate(90deg); }
+
+/* ── Reference panes ── */
+.ref-section { padding: 16px 24px; border-top: 0.5px solid var(--border); }
+.ref-section h3 { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--text2); margin-bottom: 10px; }
+.ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px; }
+.ref-card { background: var(--bg2); border-radius: 6px; padding: 8px 12px; font-size: 11px; }
+.ref-card .rc-label { font-weight: 500; color: var(--text); }
+.ref-card .rc-sub { color: var(--text3); font-size: 10px; margin-top: 2px; }
+.ref-tag { display: inline-block; background: var(--bg); border: 0.5px solid var(--border); border-radius: 4px; padding: 2px 7px; font-size: 11px; color: var(--text2); margin: 2px; }
+.ref-tag.t1 { background: #EEEDFE; color: #3C3489; border-color: transparent; }
+.ref-tag.t2 { background: #E1F5EE; color: #085041; border-color: transparent; }
+@media (prefers-color-scheme: dark) {
+  .ref-tag.t1 { background: #26215C; color: #AFA9EC; }
+  .ref-tag.t2 { background: #04342C; color: #5DCAA5; }
+}
 
 /* ── Badges ── */
 .badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 500; white-space: nowrap; margin: 1px; }
@@ -131,11 +139,11 @@ td.muted { color: var(--text2); font-size: 11px; white-space: nowrap; }
 /* ── Misc ── */
 .empty   { padding: 3rem; text-align: center; color: var(--text3); font-size: 13px; }
 .loading { padding: 3rem; text-align: center; color: var(--text2); font-size: 13px; }
-.pagination { display: flex; align-items: center; gap: 8px; padding: 12px 24px; border-top: 0.5px solid var(--border); font-size: 12px; color: var(--text2); }
+.pagination { display: flex; align-items: center; gap: 8px; padding: 10px 24px; border-top: 0.5px solid var(--border); font-size: 12px; color: var(--text2); flex-wrap: wrap; }
 .pagination button { background: var(--bg2); border: 0.5px solid var(--border); color: var(--text); border-radius: 4px; padding: 4px 10px; cursor: pointer; font-size: 12px; }
 .pagination button:disabled { opacity: .4; cursor: default; }
 .page-info { margin: 0 auto; }
-footer { padding: 16px 24px; font-size: 11px; color: var(--text3); font-family: var(--mono); border-top: 0.5px solid var(--border); }
+footer { padding: 14px 24px; font-size: 11px; color: var(--text3); font-family: var(--mono); border-top: 0.5px solid var(--border); }
 footer a { color: var(--text3); }
 </style>
 </head>
@@ -147,7 +155,17 @@ footer a { color: var(--text3); }
   <span class="updated" id="updated">Loading…</span>
 </header>
 
-<div class="stats-bar" id="stats"></div>
+<div class="about">
+    The Human Mosaic is a “This Week In”-style newsletter bringing you the cutting-edgiest research at the interface of human evolution and human health. Tracking how we change in our lifetime and, what those changes mean for our health, and how these changes ripple through populations and generations.
+</div>
+
+<div class="stats-bar" id="stats">
+  <div class="nav-links">
+    <a href="#ref-feeds">RSS feeds</a>
+    <a href="#ref-keywords">Keywords</a>
+    <a href="#" id="sheet-link" target="_blank">Google Sheet ↗</a>
+  </div>
+</div>
 
 <div class="controls">
   <input type="text" id="search" placeholder="Search title, author, abstract…" oninput="applyFilters()">
@@ -173,6 +191,12 @@ footer a { color: var(--text3); }
     <option value="source:1">Source A→Z</option>
     <option value="section:1">Section A→Z</option>
   </select>
+  <select id="fPageSize" onchange="changePageSize()">
+    <option value="15" selected>15 per page</option>
+    <option value="30">30 per page</option>
+    <option value="50">50 per page</option>
+    <option value="100">100 per page</option>
+  </select>
   <button class="btn" onclick="loadData()">↺ Refresh</button>
   <div class="view-toggle">
     <button class="btn active" id="btn-table" onclick="setView('table')" title="Table view">☰</button>
@@ -180,31 +204,23 @@ footer a { color: var(--text3); }
   </div>
 </div>
 
-<!-- Table view -->
 <div id="table-view">
   <div class="table-wrap">
     <table>
-      <thead>
-        <tr>
-          <th onclick="sortBy('title')"   data-col="title">Title</th>
-          <th onclick="sortBy('source')"  data-col="source">Source</th>
-          <th onclick="sortBy('section')" data-col="section">Section</th>
-          <th onclick="sortBy('date')"    data-col="date">Date</th>
-          <th onclick="sortBy('score')"   data-col="score">Score</th>
-          <th>Tags</th>
-        </tr>
-      </thead>
-      <tbody id="tbody">
-        <tr><td colspan="5" class="loading">Loading papers…</td></tr>
-      </tbody>
+      <thead><tr>
+        <th onclick="sortBy('title')"   data-col="title">Title</th>
+        <th onclick="sortBy('source')"  data-col="source">Source</th>
+        <th onclick="sortBy('section')" data-col="section">Section</th>
+        <th onclick="sortBy('date')"    data-col="date">Date</th>
+        <th onclick="sortBy('score')"   data-col="score">Score</th>
+        <th>Tags</th>
+      </tr></thead>
+      <tbody id="tbody"><tr><td colspan="6" class="loading">Loading papers…</td></tr></tbody>
     </table>
   </div>
 </div>
 
-<!-- Tile view -->
-<div id="tile-view">
-  <div class="masonry" id="masonry"></div>
-</div>
+<div id="tile-view"><div class="masonry" id="masonry"></div></div>
 
 <div class="pagination">
   <button id="prev" onclick="changePage(-1)" disabled>← Prev</button>
@@ -212,33 +228,49 @@ footer a { color: var(--text3); }
   <button id="next" onclick="changePage(1)">Next →</button>
 </div>
 
+<!-- Reference: RSS Feeds -->
+<div class="ref-section" id="ref-feeds">
+  <h3>RSS Feeds</h3>
+  <div class="ref-grid" id="feed-grid"><span style="font-size:12px;color:var(--text3)">Loading…</span></div>
+</div>
+
+<!-- Reference: Keywords -->
+<div class="ref-section" id="ref-keywords">
+  <h3>Keywords</h3>
+  <div id="kw-grid"><span style="font-size:12px;color:var(--text3)">Loading…</span></div>
+</div>
+
 <footer>
   Data updated daily via GitHub Actions ·
-  <a href="#" id="sheet-link" target="_blank">Google Sheet</a>
+  <a href="#" id="footer-sheet-link" target="_blank">Google Sheet ↗</a>
 </footer>
 
 </div>
 <script>
-const PAGE_SIZE = 50;
+const REF_SHEET_ID = "18rT6XT_SfOvQQi1xkdodcgCmKu9FeF_SHIOb06rFfC0";
+const KW_GID   = "0";
+const FEED_GID = "1651663853";
+
+let PAGE_SIZE = 15;
 let allData = [], filtered = [], sortCol = "date", sortDir = -1, page = 0, currentView = "table";
 
+// ── Sheet loading ─────────────────────────────────────────────────────────────
 async function getSheetId() {
   try { const r = await fetch("sheet_id.txt"); if (r.ok) return (await r.text()).trim(); } catch {}
   return null;
 }
 
 async function loadData() {
-  const loadMsg = '<tr><td colspan="5" class="loading">Fetching papers…</td></tr>';
-  document.getElementById("tbody").innerHTML = loadMsg;
+  document.getElementById("tbody").innerHTML = '<tr><td colspan="6" class="loading">Fetching papers…</td></tr>';
   document.getElementById("masonry").innerHTML = '<div class="loading">Fetching papers…</div>';
-
   const sheetId = await getSheetId();
   if (!sheetId) {
-    document.getElementById("tbody").innerHTML = '<tr><td colspan="5" class="empty">No sheet_id.txt found.</td></tr>';
+    document.getElementById("tbody").innerHTML = '<tr><td colspan="6" class="empty">No sheet_id.txt found.</td></tr>';
     return;
   }
   const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=46876741`;
   document.getElementById("sheet-link").href = `https://docs.google.com/spreadsheets/d/${sheetId}`;
+  document.getElementById("footer-sheet-link").href = `https://docs.google.com/spreadsheets/d/${sheetId}`;
   try {
     const r = await fetch(csvUrl);
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -252,11 +284,97 @@ async function loadData() {
       }
     });
   } catch (e) {
-    document.getElementById("tbody").innerHTML = `<tr><td colspan="5" class="empty">Failed to load: ${e.message}</td></tr>`;
-    document.getElementById("masonry").innerHTML = `<div class="empty">Failed to load: ${e.message}</div>`;
+    document.getElementById("tbody").innerHTML = `<tr><td colspan="6" class="empty">Failed to load: ${e.message}</td></tr>`;
   }
 }
 
+async function loadRefData() {
+  const base = `https://docs.google.com/spreadsheets/d/${REF_SHEET_ID}/export?format=csv`;
+
+  // Feeds
+  try {
+    const r = await fetch(`${base}&gid=${FEED_GID}`);
+    if (r.ok) {
+      Papa.parse(await r.text(), { header: true, skipEmptyLines: true, complete: ({ data }) => renderFeeds(data) });
+    }
+  } catch {}
+
+  // Keywords
+  try {
+    const r = await fetch(`${base}&gid=${KW_GID}`);
+    if (r.ok) {
+      Papa.parse(await r.text(), { header: true, skipEmptyLines: true, complete: ({ data }) => renderKeywords(data) });
+    }
+  } catch {}
+}
+
+function renderFeeds(data) {
+  if (!data.length) return;
+  const grid = document.getElementById("feed-grid");
+
+  // Group by Publisher
+  const groups = {};
+  data.forEach(row => {
+    const pub = (row["Publisher"] || "Other").trim();
+    if (!groups[pub]) groups[pub] = [];
+    groups[pub].push(row);
+  });
+
+  grid.innerHTML = Object.entries(groups).sort((a,b) => a[0].localeCompare(b[0])).map(([pub, rows]) => {
+    const items = rows.map(row => {
+      const name  = (row["Source"] || "").trim();
+      const type  = (row["Type"]   || "").trim();
+      const url   = (row["Feed"]   || "").trim();
+      const badge = type === "preprint" ? "b-preprint" : "b-journal";
+      return `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:0.5px solid var(--border)">
+        <span class="badge ${badge}" style="font-size:9px;flex-shrink:0">${type}</span>
+        <span style="font-size:12px;color:var(--text);flex:1">${escHtml(name)}</span>
+        ${url ? `<a href="${escHtml(url)}" target="_blank" style="color:var(--text3);font-size:11px;flex-shrink:0">↗</a>` : ""}
+      </div>`;
+    }).join("");
+    return `<div class="ref-card" style="grid-column: span 1">
+      <div class="rc-label" style="margin-bottom:6px">${escHtml(pub)}</div>
+      ${items}
+    </div>`;
+  }).join("");
+}
+
+function renderKeywords(data) {
+  if (!data.length) return;
+  const grid = document.getElementById("kw-grid");
+
+  // Group by Keyword_Category within each Keyword_Tier
+  const tiers = {"Tier 1": {}, "Tier 2": {}};
+  data.forEach(row => {
+    const kw   = (row["Keyword"]          || "").trim();
+    const cat  = (row["Keyword_Category"] || "Other").trim();
+    const tier = (row["Keyword_Tier"]     || "").trim();
+    if (!kw || !tiers[tier]) return;
+    if (!tiers[tier][cat]) tiers[tier][cat] = [];
+    tiers[tier][cat].push(kw);
+  });
+
+  grid.innerHTML = Object.entries(tiers).map(([tier, cats]) => {
+    if (!Object.keys(cats).length) return "";
+    const cls  = tier === "Tier 1" ? "t1" : "t2";
+    const desc = tier === "Tier 1"
+      ? "Match any 1 to include paper"
+      : "Match any 2 to include paper";
+    const catBlocks = Object.entries(cats).map(([cat, kws]) =>
+      `<div style="margin-bottom:10px">
+        <div style="font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">${escHtml(cat)}</div>
+        <div>${kws.map(k => `<span class="ref-tag ${cls}">${escHtml(k)}</span>`).join("")}</div>
+      </div>`
+    ).join("");
+    return `<div style="margin-bottom:20px">
+      <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px">${tier}</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px">${desc}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">${catBlocks}</div>
+    </div>`;
+  }).join("");
+}
+
+// ── Filters & sort ────────────────────────────────────────────────────────────
 function populateSectionFilter(data) {
   const sel = document.getElementById("fSection"), cur = sel.value;
   const secs = [...new Set(data.map(d => d.section || "Other"))].sort();
@@ -288,13 +406,11 @@ function applyFilters() {
       return sortDir * (da - db);
     }
     if (sortCol === "score") {
-      const na = parseFloat(av) || 0, nb = parseFloat(bv) || 0;
-      return sortDir * (na - nb);
+      return sortDir * ((parseFloat(av) || 0) - (parseFloat(bv) || 0));
     }
     return sortDir * av.toLowerCase().localeCompare(bv.toLowerCase());
   });
 
-  // Sync sort dropdown
   const sel = document.getElementById("fSort");
   const target = `${sortCol}:${sortDir}`;
   for (const opt of sel.options) { if (opt.value === target) { sel.value = target; break; } }
@@ -305,16 +421,25 @@ function applyFilters() {
 }
 
 function renderStats() {
-  const j = filtered.filter(p => p.type === "journal").length;
+  const j  = filtered.filter(p => p.type === "journal").length;
   const pr = filtered.filter(p => p.type === "preprint").length;
-  const secs = new Set(filtered.map(p => p.section || "Other")).size;
   document.getElementById("stats").innerHTML =
     `<div class="stat"><strong>${filtered.length}</strong> papers</div>
      <div class="stat"><strong>${j}</strong> journal</div>
      <div class="stat"><strong>${pr}</strong> preprint</div>
-     <div class="stat"><strong>${secs}</strong> sections</div>`;
+     <div class="nav-links">
+       <a href="#ref-feeds">RSS feeds</a>
+       <a href="#ref-keywords">Keywords</a>
+       <a href="#" id="sheet-link" target="_blank">Google Sheet ↗</a>
+     </div>`;
+  const sheetId = document.getElementById("footer-sheet-link")?.href.split("/d/")[1]?.split("/")[0];
+  if (sheetId) {
+    const sl = document.getElementById("sheet-link");
+    if (sl) sl.href = `https://docs.google.com/spreadsheets/d/${sheetId}`;
+  }
 }
 
+// ── Render ────────────────────────────────────────────────────────────────────
 function escHtml(s) { return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
 function badgesHtml(p, maxTags) {
@@ -322,7 +447,7 @@ function badgesHtml(p, maxTags) {
   const tags  = (p.tags || "").split(",").filter(Boolean).slice(0, maxTags)
                   .map(t => `<span class="badge b-sec">${escHtml(t.trim())}</span>`).join("");
   return `<span class="badge ${btype}">${escHtml(p.source||"")}</span>
-          <span class="badge b-sec">${escHtml((p.section||"Other").replace(/&/g,"&amp;"))}</span>
+          <span class="badge b-sec">${escHtml((p.section||"Other"))}</span>
           ${tags}`;
 }
 
@@ -343,69 +468,62 @@ function renderPage() {
   const total = Math.ceil(filtered.length / PAGE_SIZE);
 
   if (currentView === "table") {
-    if (!slice.length) {
-      document.getElementById("tbody").innerHTML = '<tr><td colspan="5" class="empty">No papers match</td></tr>';
-    } else {
-      document.getElementById("tbody").innerHTML = slice.map((p, i) => {
-        const id = start + i;
-        const link    = p.url || (p.doi ? `https://doi.org/${p.doi}` : "#");
-        const fetched = new Date(p.fetched_at || "");
-        const isNew   = !isNaN(fetched) && (now - fetched) < 86400000;
-        const dateStr = p.date ? new Date(p.date).toLocaleDateString("en-US", {month:"short",day:"numeric",year:"numeric"}) : "";
-        const btype   = p.type === "preprint" ? "b-preprint" : "b-journal";
-        const section = escHtml((p.section||"Other").replace(/&/g,"&amp;"));
-        const tags    = (p.tags||"").split(",").filter(Boolean).slice(0,4).map(t=>`<span class="badge b-sec">${escHtml(t.trim())}</span>`).join(" ");
-        const scoreNum = p.score !== undefined && p.score !== "" ? parseInt(p.score) : null;
-        const scoreBadge = scoreNum !== null ? `<span class="badge b-sec" style="font-variant-numeric:tabular-nums">${scoreNum}/10</span>` : "";
-        const abs     = escHtml(p.abstract||"");
-        const hasAbs  = abs.length > 0;
-        return `<tr class="data-row" id="row-${id}" onclick="${hasAbs?`toggleAbstract(${id})`:''}">
-          <td class="title">
-            <span class="chevron">${hasAbs?"▶":""}</span>${isNew?'<span class="badge b-new">new</span> ':''}
-            <a href="${escHtml(link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escHtml(p.title||"")}</a>
-            <div style="font-size:11px;color:var(--text2);margin-top:3px">${escHtml(p.authors||"")}</div>
-          </td>
-          <td class="muted"><span class="badge ${btype}">${escHtml(p.source||"")}</span></td>
-          <td class="muted"><span class="badge b-sec">${section}</span></td>
-          <td class="muted">${dateStr}</td>
-          <td style="white-space:nowrap">${scoreBadge}</td>
-          <td>${tags}</td>
-        </tr>
-        <tr class="abstract-row" id="abs-${id}">
-          <td colspan="5"><div class="abstract-inner">${abs}</div></td>
-        </tr>`;
-      }).join("");
-    }
+    document.getElementById("tbody").innerHTML = !slice.length
+      ? '<tr><td colspan="6" class="empty">No papers match</td></tr>'
+      : slice.map((p, i) => {
+          const id      = start + i;
+          const link    = p.url || (p.doi ? `https://doi.org/${p.doi}` : "#");
+          const fetched = new Date(p.fetched_at || "");
+          const isNew   = !isNaN(fetched) && (now - fetched) < 86400000;
+          const dateStr = p.date ? new Date(p.date).toLocaleDateString("en-US", {month:"short",day:"numeric",year:"numeric"}) : "";
+          const btype   = p.type === "preprint" ? "b-preprint" : "b-journal";
+          const section = escHtml(p.section || "Other");
+          const tags    = (p.tags||"").split(",").filter(Boolean).slice(0,4).map(t=>`<span class="badge b-sec">${escHtml(t.trim())}</span>`).join(" ");
+          const abs     = escHtml(p.abstract||"");
+          const scoreNum = p.score !== undefined && p.score !== "" ? parseInt(p.score) : null;
+          const scoreBadge = scoreNum !== null ? `<span class="badge b-sec" style="font-variant-numeric:tabular-nums">${scoreNum}/10</span>` : "";
+          return `<tr class="data-row" id="row-${id}" onclick="${abs?`toggleAbstract(${id})`:''}">
+            <td class="title">
+              <span class="chevron">${abs?"▶":""}</span>${isNew?'<span class="badge b-new">new</span> ':''}
+              <a href="${escHtml(link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escHtml(p.title||"")}</a>
+              <div style="font-size:11px;color:var(--text2);margin-top:2px">${escHtml(p.authors||"")}</div>
+            </td>
+            <td class="muted"><span class="badge ${btype}">${escHtml(p.source||"")}</span></td>
+            <td class="muted"><span class="badge b-sec">${section}</span></td>
+            <td class="muted">${dateStr}</td>
+            <td class="score-cell">${scoreBadge}</td>
+            <td>${tags}</td>
+          </tr>
+          <tr class="abstract-row" id="abs-${id}">
+            <td colspan="6"><div class="abstract-inner">${abs}</div></td>
+          </tr>`;
+        }).join("");
 
-    // Sort indicators
     document.querySelectorAll("thead th[data-col]").forEach(th => {
       th.classList.remove("sort-asc","sort-desc");
       if (th.dataset.col === sortCol) th.classList.add(sortDir===1?"sort-asc":"sort-desc");
     });
 
   } else {
-    // Tile view
-    if (!slice.length) {
-      document.getElementById("masonry").innerHTML = '<div class="empty">No papers match</div>';
-    } else {
-      document.getElementById("masonry").innerHTML = slice.map((p, i) => {
-        const id      = start + i;
-        const link    = p.url || (p.doi ? `https://doi.org/${p.doi}` : "#");
-        const fetched = new Date(p.fetched_at || "");
-        const isNew   = !isNaN(fetched) && (now - fetched) < 86400000;
-        const dateStr = p.date ? new Date(p.date).toLocaleDateString("en-US", {month:"short",day:"numeric",year:"numeric"}) : "";
-        const abs     = escHtml(p.abstract||"");
-        const hasAbs  = abs.length > 0;
-        return `<div class="tile" id="tile-${id}" onclick="${hasAbs?`toggleAbstract(${id})`:''}">
-          ${hasAbs?'<span class="tile-chevron">▶</span>':''}
-          ${isNew?'<span class="badge b-new" style="float:right;margin-left:4px">new</span>':''}
-          <div class="tile-title"><a href="${escHtml(link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escHtml(p.title||"")}</a></div>
-          <div class="tile-meta">${escHtml(p.authors||"")}${p.authors&&dateStr?" · ":""}${dateStr}</div>
-          <div class="tile-badges">${badgesHtml(p, 3)}${p.score ? `<span class="badge b-sec">${parseInt(p.score)}/10</span>` : ""}</div>
-          ${hasAbs?`<div class="tile-abstract">${abs}</div>`:""}
-        </div>`;
-      }).join("");
-    }
+    document.getElementById("masonry").innerHTML = !slice.length
+      ? '<div class="empty">No papers match</div>'
+      : slice.map((p, i) => {
+          const id      = start + i;
+          const link    = p.url || (p.doi ? `https://doi.org/${p.doi}` : "#");
+          const fetched = new Date(p.fetched_at || "");
+          const isNew   = !isNaN(fetched) && (now - fetched) < 86400000;
+          const dateStr = p.date ? new Date(p.date).toLocaleDateString("en-US", {month:"short",day:"numeric",year:"numeric"}) : "";
+          const abs     = escHtml(p.abstract||"");
+          const scoreNum = p.score !== undefined && p.score !== "" ? parseInt(p.score) : null;
+          return `<div class="tile" id="tile-${id}" onclick="${abs?`toggleAbstract(${id})`:''}">
+            ${abs?'<span class="tile-chevron">▶</span>':''}
+            ${isNew?'<span class="badge b-new" style="float:right;margin-left:4px">new</span>':''}
+            <div class="tile-title"><a href="${escHtml(link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escHtml(p.title||"")}</a></div>
+            <div class="tile-meta">${escHtml(p.authors||"")}${p.authors&&dateStr?" · ":""}${dateStr}</div>
+            <div class="tile-badges">${badgesHtml(p,3)}${scoreNum!==null?`<span class="badge b-sec">${scoreNum}/10</span>`:""}</div>
+            ${abs?`<div class="tile-abstract">${abs}</div>`:""}
+          </div>`;
+        }).join("");
   }
 
   document.getElementById("page-info").textContent = `Page ${page+1} of ${total||1}  (${filtered.length} papers)`;
@@ -434,6 +552,12 @@ function changePage(d) {
   window.scrollTo(0, 0);
 }
 
+function changePageSize() {
+  PAGE_SIZE = parseInt(document.getElementById("fPageSize").value);
+  page = 0;
+  renderPage();
+}
+
 function setView(v) {
   currentView = v;
   document.getElementById("table-view").style.display = v === "table" ? "" : "none";
@@ -444,6 +568,7 @@ function setView(v) {
 }
 
 loadData();
+loadRefData();
 </script>
 </body>
 </html>

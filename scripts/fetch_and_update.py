@@ -711,7 +711,7 @@ Score each paper 0-10 for relevance:
 - 2-4: Adjacent (general cancer biology or population genetcis with genomic component, but not focused on evolution or instability)
 - 0-1: Irrelevant (evolutionary studies in non-human models with no human application, pure methods papers with no biological insight)
  
-Assign each paper exactly one section:
+Assign each paper exactly one of the following sections:
 - "Cancer Evolution": tumor phylogenetics, subclonal dynamics, clonal selection, WGD, ecDNA, sarcoma, cancer cell fraction, tumor heterogeneity
 - "Somatic Evolution": clonal hematopoiesis, somatic mosaicism, aging, non-cancer clonal expansions, developmental mosaicism
 - "Genome Instability": CIN, structural variation, chromothripsis, BFB, replication stress, DNA damage, aneuploidy, rearrangements
